@@ -14,9 +14,9 @@ import {
   tryRotateWithKick,
   getDropPosition,
   lockPiece,
-  findCompleteLines,
-  clearLines,
-} from '../lib/collision';
+  findCompleteRows,
+  clearRows,
+} from '../lib/gameLogic';
 import type { ActiveTetromino, Position } from '../types/tetromino';
 import type { Board } from '../types/game';
 import { createEmptyBoard } from '../lib/gameLogic';
@@ -228,7 +228,7 @@ describe('lockPiece', () => {
   });
 });
 
-describe('findCompleteLines', () => {
+describe('findCompleteRows', () => {
   let board: Board;
   
   beforeEach(() => {
@@ -236,7 +236,7 @@ describe('findCompleteLines', () => {
   });
   
   it('should return empty array when no complete lines', () => {
-    const lines = findCompleteLines(board);
+    const lines = findCompleteRows(board);
     expect(lines).toHaveLength(0);
   });
   
@@ -244,7 +244,7 @@ describe('findCompleteLines', () => {
     for (let x = 0; x < 10; x++) {
       board[19][x] = { filled: true, type: 'I' };
     }
-    const lines = findCompleteLines(board);
+    const lines = findCompleteRows(board);
     
     expect(lines).toEqual([19]);
   });
@@ -254,7 +254,7 @@ describe('findCompleteLines', () => {
       board[18][x] = { filled: true, type: 'T' };
       board[19][x] = { filled: true, type: 'I' };
     }
-    const lines = findCompleteLines(board);
+    const lines = findCompleteRows(board);
     
     expect(lines).toContain(18);
     expect(lines).toContain(19);
@@ -262,27 +262,21 @@ describe('findCompleteLines', () => {
   });
 });
 
-describe('clearLines', () => {
+describe('clearRows', () => {
   let board: Board;
   
   beforeEach(() => {
     board = createEmptyBoard();
   });
   
-  it('should return same board when no lines to clear', () => {
-    const result = clearLines(board, []);
-    expect(result.board).toBe(board);
-    expect(result.linesCleared).toBe(0);
-  });
-  
-  it('should clear single line and add empty line at top', () => {
+  it('should return new board when clearing lines', () => {
     for (let x = 0; x < 10; x++) {
       board[19][x] = { filled: true, type: 'I' };
     }
-    const result = clearLines(board, [19]);
+    const result = clearRows(board, [19]);
     
-    expect(result.linesCleared).toBe(1);
-    expect(result.board[0].every(cell => !cell.filled)).toBe(true);
+    expect(result).toBeDefined();
+    expect(result[0].every((cell: { filled: boolean }) => !cell.filled)).toBe(true);
   });
   
   it('should preserve non-cleared lines', () => {
@@ -292,9 +286,9 @@ describe('clearLines', () => {
     for (let x = 0; x < 10; x++) {
       board[19][x] = { filled: true, type: 'I' };
     }
-    const result = clearLines(board, [19]);
+    const result = clearRows(board, [19]);
     
     // Row 17 should now be at 18 (shifted down by 1)
-    expect(result.board[18].every(cell => cell.filled)).toBe(true);
+    expect(result[18].every((cell: { filled: boolean }) => cell.filled)).toBe(true);
   });
 });

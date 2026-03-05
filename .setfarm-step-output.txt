@@ -1,5 +1,5 @@
 STATUS: done
-STORY_BRANCH: 13b947c6-US-005
-PR_URL: https://github.com/hikmetgulsesli/3d-tetris/pull/3
-CHANGES: Implemented keyboard input handling with useKeyboard hook. Created types/keyboard.ts with key mappings for all game actions (MOVE_LEFT, MOVE_RIGHT, SOFT_DROP, HARD_DROP, ROTATE_CW, ROTATE_CCW, HOLD, PAUSE). Arrow keys for movement, Space for hard drop, Z/X/ArrowUp for rotation, C for hold, P/Escape for pause. Configurable key repeat with 200ms initial delay and 50ms repeat interval.
-TESTS: Created comprehensive test suite in __tests__/keyboard.test.ts with 38 tests covering key mappings, key repeat behavior, prevent default functionality, and window blur handling. All 94 tests pass (including existing tests).
+STORY_BRANCH: 13b947c6-US-007
+PR_URL: https://github.com/hikmetgulsesli/3d-tetris/pull/4
+CHANGES: Implemented line clearing, scoring system with combo multipliers, particle effects for line clears, level progression (every 10 lines), and localStorage high score persistence. Created gameLogic.ts, collision.ts, useGame.ts hook, and Particles.tsx component.
+TESTS: 135 tests passing covering line clearing (findCompleteRows, clearRows), scoring (calculateLineClearScore with combo/level multipliers), collision detection, particle effects, and game state management.

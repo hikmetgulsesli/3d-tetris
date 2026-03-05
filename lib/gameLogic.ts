@@ -4,7 +4,8 @@
  * US-007: Line clearing, scoring, and particle effects
  */
 
-import type { TetrominoType, Position, Cell } from '../types/tetromino';
+import type { TetrominoType, Position, Rotation, ActiveTetromino, Cell } from '../types/tetromino';
+import { TETROMINOS } from './tetrominos';
 
 /** Game board dimensions */
 export const BOARD_WIDTH = 10;
@@ -241,6 +242,151 @@ export function saveHighScore(score: number): void {
 /** Check if new high score */
 export function isNewHighScore(score: number, highScore: number): boolean {
   return score > highScore;
+}
+
+/** Check if position is within board bounds */
+export function isWithinBounds(x: number, y: number): boolean {
+  return x >= 0 && x < BOARD_WIDTH && y >= 0 && y < BOARD_HEIGHT;
+}
+
+/** Check if a cell is occupied */
+export function isCellOccupied(board: Board, x: number, y: number): boolean {
+  if (!isWithinBounds(x, y)) return true;
+  return board[y][x].filled;
+}
+
+/** Check collision for a piece at given position and rotation */
+export function checkCollision(
+  type: TetrominoType,
+  position: Position,
+  rotation: Rotation,
+  board: Board
+): boolean {
+  const piece = TETROMINOS[type];
+  const cells = piece.rotations[rotation];
+
+  for (const [relX, relY] of cells) {
+    const x = position.x + relX;
+    const y = position.y + relY;
+
+    if (!isWithinBounds(x, y) || isCellOccupied(board, x, y)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/** Check collision at spawn position */
+export function checkSpawnCollision(
+  type: TetrominoType,
+  position: Position,
+  board: Board
+): boolean {
+  return checkCollision(type, position, 0, board);
+}
+
+/** Try to move a piece by dx, dy */
+export function tryMove(
+  piece: ActiveTetromino,
+  dx: number,
+  dy: number,
+  board: Board
+): Position | null {
+  const newPosition: Position = {
+    x: piece.position.x + dx,
+    y: piece.position.y + dy,
+  };
+
+  if (checkCollision(piece.type, newPosition, piece.rotation, board)) {
+    return null;
+  }
+
+  return newPosition;
+}
+
+/** Wall kick offsets (simplified SRS) */
+const WALL_KICKS_JLSTZ: Position[][] = [
+  [{ x: 0, y: 0 }, { x: -1, y: 0 }, { x: -1, y: 1 }, { x: 0, y: -2 }, { x: -1, y: -2 }],
+  [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: -1 }, { x: 0, y: 2 }, { x: 1, y: 2 }],
+  [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: -2 }, { x: 1, y: -2 }],
+  [{ x: 0, y: 0 }, { x: -1, y: 0 }, { x: -1, y: -1 }, { x: 0, y: 2 }, { x: -1, y: 2 }],
+];
+
+const WALL_KICKS_I: Position[][] = [
+  [{ x: 0, y: 0 }, { x: -2, y: 0 }, { x: 1, y: 0 }, { x: -2, y: -1 }, { x: 1, y: 2 }],
+  [{ x: 0, y: 0 }, { x: -1, y: 0 }, { x: 2, y: 0 }, { x: -1, y: 2 }, { x: 2, y: -1 }],
+  [{ x: 0, y: 0 }, { x: 2, y: 0 }, { x: -1, y: 0 }, { x: 2, y: 1 }, { x: -1, y: -2 }],
+  [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: -2, y: 0 }, { x: 1, y: -2 }, { x: -2, y: 1 }],
+];
+
+/** Get wall kick offsets for piece type */
+function getWallKicks(type: TetrominoType, fromRotation: Rotation, clockwise: boolean): Position[] {
+  const kicks = type === 'I' ? WALL_KICKS_I : WALL_KICKS_JLSTZ;
+  const rotationIndex = clockwise ? fromRotation : (fromRotation + 3) % 4;
+  return kicks[rotationIndex];
+}
+
+/** Try to rotate with wall kicks */
+export function tryRotateWithKick(
+  piece: ActiveTetromino,
+  clockwise: boolean,
+  board: Board
+): { rotation: Rotation; position: Position } | null {
+  const newRotation = ((piece.rotation + (clockwise ? 1 : 3)) % 4) as Rotation;
+  const kicks = getWallKicks(piece.type, piece.rotation, clockwise);
+
+  for (const kick of kicks) {
+    const newPosition: Position = {
+      x: piece.position.x + kick.x,
+      y: piece.position.y + kick.y,
+    };
+
+    if (!checkCollision(piece.type, newPosition, newRotation, board)) {
+      return { rotation: newRotation, position: newPosition };
+    }
+  }
+
+  return null;
+}
+
+/** Get drop position for hard drop */
+export function getDropPosition(
+  piece: ActiveTetromino,
+  board: Board
+): Position {
+  let y = piece.position.y;
+
+  while (true) {
+    const newY = y + 1;
+    const testPosition: Position = { x: piece.position.x, y: newY };
+
+    if (checkCollision(piece.type, testPosition, piece.rotation, board)) {
+      break;
+    }
+
+    y = newY;
+  }
+
+  return { x: piece.position.x, y };
+}
+
+/** Lock piece onto board */
+export function lockPiece(piece: ActiveTetromino, board: Board): Board {
+  const newBoard: Board = board.map(row => [...row]);
+  const pieceData = TETROMINOS[piece.type];
+  const cells = pieceData.rotations[piece.rotation];
+
+  for (const [relX, relY] of cells) {
+    const x = piece.position.x + relX;
+    const y = piece.position.y + relY;
+
+    if (isWithinBounds(x, y)) {
+      newBoard[y][x] = { filled: true, type: piece.type };
+    }
+  }
+
+  return newBoard;
 }
 
 /** Process line clear and update game state */

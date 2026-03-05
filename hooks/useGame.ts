@@ -34,13 +34,13 @@ import {
   tryRotateWithKick,
   getDropPosition,
   lockPiece,
-  findCompleteLines,
-  clearLines,
-} from '../lib/collision';
+} from '../lib/gameLogic';
 import {
   createEmptyBoard,
   loadHighScore,
   saveHighScore,
+  findCompleteRows,
+  clearRows,
 } from '../lib/gameLogic';
 import { getRandomTetrominoType, getSpawnOffset } from '../lib/tetrominos';
 
@@ -172,8 +172,9 @@ export function useGame(options: UseGameOptions = {}): UseGameReturn {
     const newBoard = lockPiece(currentState.activePiece, currentState.board);
     
     // Find and clear complete lines
-    const completeRows = findCompleteLines(newBoard);
-    const { board: clearedBoard, linesCleared } = clearLines(newBoard, completeRows);
+    const completeRows = findCompleteRows(newBoard);
+    const clearedBoard = clearRows(newBoard, completeRows);
+    const linesCleared = completeRows.length;
     
     // Update score
     let newScore = { ...currentState.score };
