@@ -12,8 +12,8 @@ export type { TetrominoType, ActiveTetromino, Position, Rotation, Cell } from '.
 export const BOARD_WIDTH = 10;
 export const BOARD_HEIGHT = 20;
 
-/** Game status states */
-export type GameStatus = 'START' | 'PLAYING' | 'PAUSED' | 'GAME_OVER';
+/** Game status states (new uppercase version) */
+export type GameStatus = 'START' | 'PLAYING' | 'PAUSED' | 'GAME_OVER' | 'menu' | 'playing' | 'paused' | 'gameover';
 
 /** A single cell in the game board */
 export interface BoardCell {
@@ -164,7 +164,7 @@ export function calculateLineClearScore(linesCleared: number, level: number, com
   return calculateLineScore(linesCleared, combo, level);
 }
 
-// Re-export from gameLogic
+// Re-export from gameLogic (BOARD_WIDTH and BOARD_HEIGHT already defined above)
 export {
   createEmptyBoard,
   isRowComplete,
@@ -180,3 +180,42 @@ export {
   isNewHighScore,
   processLineClear,
 } from '../lib/gameLogic';
+
+/** Legacy GAME_CONFIG for backward compatibility with US-002 store */
+export const GAME_CONFIG = {
+  BOARD_WIDTH: 10,
+  BOARD_HEIGHT: 20,
+  NEXT_PIECES_COUNT: 3,
+  INITIAL_FALL_SPEED: 1000,
+  SPEED_INCREASE_PER_LEVEL: 0.05,
+  LINES_PER_LEVEL: 10,
+  LINE_SCORES: [100, 300, 500, 800] as const,
+  COMBO_MULTIPLIER: 0.1,
+};
+
+/** Legacy ScoreState for backward compatibility */
+export interface ScoreState {
+  score: number;
+  level: number;
+  lines: number;
+  combo: number;
+  highScore: number;
+}
+
+/** Legacy CurrentPiece for backward compatibility */
+export interface CurrentPiece {
+  type: import('./tetromino').TetrominoType;
+  position: import('./tetromino').Position;
+  rotation: number;
+}
+
+/** Legacy createInitialScoreState for backward compatibility */
+export function createInitialScoreState(): ScoreState {
+  return {
+    score: 0,
+    level: 1,
+    lines: 0,
+    combo: 0,
+    highScore: 0,
+  };
+}
