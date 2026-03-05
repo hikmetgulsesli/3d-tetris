@@ -43,8 +43,8 @@ export function Game() {
 
   // Restart the game
   const restartGame = useCallback(() => {
-    // Save high score before restarting if game was in progress or over
-    if (gameState === 'PLAYING' || gameState === 'GAME_OVER') {
+    // Save high score before restarting if game was in progress, paused, or over
+    if (gameState !== 'START') {
       saveHighScore(scoreData.score);
     }
     setScoreData({ score: 0, level: 1, lines: 0, maxCombo: 0 });

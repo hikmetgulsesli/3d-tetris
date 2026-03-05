@@ -23,10 +23,10 @@ export function Block({ type }: BlockProps) {
     <div 
       data-testid={`block-${type}`}
       style={{
-        width: '30px',
-        height: '30px',
+        width: 'var(--block-size)',
+        height: 'var(--block-size)',
         background: `var(--tetromino-${type.toLowerCase()})`,
-        borderRadius: '4px',
+        borderRadius: 'var(--radius-sm)',
       }}
     />
   );
@@ -41,11 +41,11 @@ export function GhostBlock({ type }: BlockProps) {
     <div 
       data-testid={`ghost-block-${type}`}
       style={{
-        width: '30px',
-        height: '30px',
+        width: 'var(--block-size)',
+        height: 'var(--block-size)',
         background: 'transparent',
         border: `2px dashed var(--tetromino-${type.toLowerCase()})`,
-        borderRadius: '4px',
+        borderRadius: 'var(--radius-sm)',
         opacity: 0.5,
       }}
     />
@@ -61,10 +61,10 @@ export function PreviewBlock({ type }: { type: TetrominoType }) {
     <div 
       data-testid={`preview-block-${type}`}
       style={{
-        width: '60px',
-        height: '60px',
+        width: 'calc(var(--block-size) * 2)',
+        height: 'calc(var(--block-size) * 2)',
         background: `var(--tetromino-${type.toLowerCase()})`,
-        borderRadius: '8px',
+        borderRadius: 'var(--radius-md)',
         opacity: 0.8,
       }}
     />

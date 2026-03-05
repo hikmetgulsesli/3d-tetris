@@ -13,12 +13,12 @@ export function GameBoard() {
     <div 
       className="flex items-center justify-center"
       style={{ 
-        width: '300px',
-        height: '600px',
+        width: 'var(--board-width)',
+        height: 'var(--board-height)',
         background: 'var(--color-bg-card)',
         border: '2px solid rgba(0, 240, 255, 0.2)',
-        borderRadius: '8px',
-        padding: '1rem',
+        borderRadius: 'var(--radius-md)',
+        padding: 'var(--space-4)',
       }}
       data-testid="game-board"
     >

@@ -19,8 +19,12 @@ interface GameOverScreenProps {
  * - New record badge if applicable
  */
 export function GameOverScreen({ scoreData, onPlayAgain, onMenu }: GameOverScreenProps) {
-  const highScore = getHighScore();
-  const isNewRecord = isNewHighScore(scoreData.score);
+  // Memoize to avoid double localStorage reads
+  const { highScore, isNewRecord } = React.useMemo(() => {
+    const hs = getHighScore();
+    const newRecord = isNewHighScore(scoreData.score);
+    return { highScore: hs, isNewRecord: newRecord };
+  }, [scoreData.score]);
   
   // Format number with commas
   const formatNumber = (num: number): string => {
@@ -48,7 +52,7 @@ export function GameOverScreen({ scoreData, onPlayAgain, onMenu }: GameOverScree
           className="inline-block px-6 py-2 rounded-full text-sm font-semibold tracking-widest mb-6"
           style={{ 
             fontFamily: 'var(--font-heading)',
-            background: 'linear-gradient(135deg, var(--color-accent-red), #dc2626)',
+            background: 'linear-gradient(135deg, var(--color-accent-red), var(--color-accent-red-dark))',
             color: '#fff',
             boxShadow: '0 0 20px rgba(239, 68, 68, 0.4)',
           }}
@@ -61,7 +65,7 @@ export function GameOverScreen({ scoreData, onPlayAgain, onMenu }: GameOverScree
           className="text-4xl md:text-5xl font-bold tracking-widest mb-8"
           style={{ 
             fontFamily: 'var(--font-heading)',
-            background: 'linear-gradient(135deg, var(--color-accent-red), #f87171)',
+            background: 'linear-gradient(135deg, var(--color-accent-red), var(--color-accent-red-light))',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
@@ -117,7 +121,7 @@ export function GameOverScreen({ scoreData, onPlayAgain, onMenu }: GameOverScree
               className="inline-block px-4 py-2 rounded-lg text-sm font-semibold tracking-widest animate-glow"
               style={{ 
                 fontFamily: 'var(--font-heading)',
-                background: 'linear-gradient(135deg, var(--color-accent-yellow), #ca8a04)',
+                background: 'linear-gradient(135deg, var(--color-accent-yellow), var(--color-accent-yellow-dark))',
                 color: '#000',
               }}
               data-testid="new-record-badge"
@@ -140,7 +144,7 @@ export function GameOverScreen({ scoreData, onPlayAgain, onMenu }: GameOverScree
             onClick={onPlayAgain}
             className="btn-primary"
             style={{
-              background: 'linear-gradient(135deg, var(--color-accent-green), #16a34a)',
+              background: 'linear-gradient(135deg, var(--color-accent-green), var(--color-accent-green-dark))',
               boxShadow: '0 0 20px rgba(34, 197, 94, 0.3)',
             }}
             data-testid="play-again-button"

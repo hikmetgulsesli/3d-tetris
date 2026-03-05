@@ -14,9 +14,14 @@
   /* Accent Colors - Neon */
   --color-accent-cyan: #00f0ff;
   --color-accent-purple: #a855f7;
+  --color-accent-purple-dark: #9333ea;
   --color-accent-green: #22c55e;
+  --color-accent-green-dark: #16a34a;
   --color-accent-yellow: #eab308;
+  --color-accent-yellow-dark: #ca8a04;
   --color-accent-red: #ef4444;
+  --color-accent-red-light: #f87171;
+  --color-accent-red-dark: #dc2626;
   --color-accent-orange: #f97316;
   --color-accent-blue: #3b82f6;
   
@@ -171,7 +176,7 @@ h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
     transition: all 0.2s ease;
     letter-spacing: 0.05em;
-    background: linear-gradient(135deg, var(--color-accent-purple), #9333ea);
+    background: linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-purple-dark));
     color: #fff;
     box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
   }
