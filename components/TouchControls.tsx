@@ -49,8 +49,6 @@ export function TouchControls({
         disabled={!canHold}
         aria-label="Hold piece"
         style={{
-          minWidth: '44px',
-          minHeight: '44px',
           padding: '12px 16px',
           fontSize: '14px',
           fontWeight: 600,
@@ -81,8 +79,6 @@ export function TouchControls({
         onClick={() => onAction('PAUSE')}
         aria-label={isPaused ? 'Resume game' : 'Pause game'}
         style={{
-          minWidth: '44px',
-          minHeight: '44px',
           padding: '12px 20px',
           fontSize: '14px',
           fontWeight: 600,
@@ -117,8 +113,6 @@ export function TouchControls({
         onClick={() => onAction('HARD_DROP')}
         aria-label="Hard drop"
         style={{
-          minWidth: '44px',
-          minHeight: '44px',
           padding: '12px 16px',
           fontSize: '14px',
           fontWeight: 600,

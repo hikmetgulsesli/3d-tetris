@@ -46,7 +46,7 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-user-select: none;
 }
 
-/* Smooth transitions for mobile layout */
-.tetris-page * {
+/* Smooth transitions for mobile layout - apply only to specific elements */
+.tetris-page .transition-colors {
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }

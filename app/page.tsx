@@ -115,29 +115,11 @@ export default function TetrisPage() {
     enabled: true,
   });
 
-  // Set up touch controls (state only - handlers attached to game board)
-  const touchState = useTouchControls({
+  // Set up touch controls (event listeners attached automatically via the hook)
+  useTouchControls({
     onAction: handleAction,
     enabled: gameState === 'PLAYING' || gameState === 'START',
   });
-
-  /**
-   * Handle touch events on game board
-   */
-  const handleBoardTouchStart = useCallback((e: React.TouchEvent) => {
-    if (!touchState.isEnabled) return;
-    
-    const touch = e.touches[0];
-    const element = e.currentTarget;
-    
-    // Create and dispatch native touch event to the hook
-    const nativeEvent = new TouchEvent('touchstart', {
-      touches: [touch],
-      cancelable: true,
-    });
-    
-    element.dispatchEvent(nativeEvent);
-  }, [touchState.isEnabled]);
 
   /**
    * Check if device is mobile (less than 1024px)
@@ -291,7 +273,6 @@ export default function TetrisPage() {
           {/* Game Board Container */}
           <div
             className="game-board"
-            onTouchStart={handleBoardTouchStart}
             style={{
               width: isMobile ? '280px' : '300px',
               height: isMobile ? '448px' : '600px',
