@@ -51,7 +51,7 @@ describe('getFallSpeed', () => {
   
   it('should not go below 50ms', () => {
     const highLevelSpeed = getFallSpeed(100, DEFAULT_GAME_CONFIG);
-    expect(highLevelSpeed).toBeGreaterThanOrEqual(50);
+    expect(highLevelSpeed).toBe(50);
   });
 });
 

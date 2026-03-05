@@ -1,10 +1,10 @@
-/**
- * Game Board Types and Logic
+/** Game Board Types and Logic
  * 
  * US-007: Line clearing, scoring, and particle effects
  */
 
 import type { TetrominoType, Position, Rotation, ActiveTetromino, Cell } from '../types/tetromino';
+import type { Particle, LineClearResult } from '../types/game';
 import { TETROMINOS } from './tetrominos';
 
 /** Game board dimensions */
@@ -24,8 +24,8 @@ export interface BoardCell {
 /** The game board as a 2D array */
 export type Board = BoardCell[][];
 
-/** Game state */
-export interface GameState {
+/** Legacy game state interface (for processLineClear compatibility) */
+export interface GameStateLegacy {
   /** Current score */
   score: number;
   /** Current level */
@@ -36,38 +36,6 @@ export interface GameState {
   combo: number;
   /** High score from localStorage */
   highScore: number;
-  /** Whether the game is paused */
-  isPaused: boolean;
-  /** Whether the game is over */
-  isGameOver: boolean;
-  /** Whether the game has started */
-  isStarted: boolean;
-}
-
-/** Particle for line clear effect */
-export interface Particle {
-  id: string;
-  x: number;
-  y: number;
-  z: number;
-  vx: number;
-  vy: number;
-  vz: number;
-  color: string;
-  life: number;
-  maxLife: number;
-}
-
-/** Line clear result */
-export interface LineClearResult {
-  /** Number of lines cleared */
-  linesCleared: number;
-  /** Score earned */
-  scoreEarned: number;
-  /** Whether it was a Tetris (4 lines) */
-  isTetris: boolean;
-  /** Row indices that were cleared */
-  clearedRows: number[];
 }
 
 /** Create an empty game board */
@@ -112,7 +80,7 @@ export function clearRows(board: Board, rowsToClear: number[]): Board {
   return newBoard;
 }
 
-/** Calculate score for line clear */
+/** Calculate score for line clear (legacy function for compatibility) */
 export function calculateLineClearScore(linesCleared: number, level: number, combo: number): number {
   // Base scores: 1=100, 2=300, 3=500, 4=800
   const baseScores: Record<number, number> = {
@@ -131,7 +99,7 @@ export function calculateLineClearScore(linesCleared: number, level: number, com
   return Math.floor(baseScore * levelMultiplier * comboMultiplier);
 }
 
-/** Calculate fall speed based on level (in ms per grid cell) */
+/** Calculate fall speed based on level (in ms per grid cell) - legacy, use getFallSpeed from types/game.ts */
 export function calculateFallSpeed(level: number): number {
   // Start at 1000ms, decrease by 5% per level, minimum 50ms
   const speed = 1000 * Math.pow(0.95, level - 1);
@@ -204,17 +172,14 @@ export function updateParticles(particles: Particle[]): Particle[] {
     .filter(p => p.life > 0);
 }
 
-/** Initial game state */
-export function createInitialGameState(): GameState {
+/** Initial game state (legacy compatibility) */
+export function createInitialGameState(): GameStateLegacy {
   return {
     score: 0,
     level: 1,
     lines: 0,
     combo: 0,
     highScore: 0,
-    isPaused: false,
-    isGameOver: false,
-    isStarted: false,
   };
 }
 
@@ -392,8 +357,8 @@ export function lockPiece(piece: ActiveTetromino, board: Board): Board {
 /** Process line clear and update game state */
 export function processLineClear(
   board: Board,
-  gameState: GameState
-): { board: Board; gameState: GameState; result: LineClearResult; particles: Particle[] } {
+  gameState: GameStateLegacy
+): { board: Board; gameState: GameStateLegacy; result: LineClearResult; particles: Particle[] } {
   const completeRows = findCompleteRows(board);
   const linesCleared = completeRows.length;
   

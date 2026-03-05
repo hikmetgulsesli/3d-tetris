@@ -12,7 +12,7 @@ import { useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
-import type { Particle } from '../lib/gameLogic';
+import type { Particle } from '../types/game';
 import { updateParticles } from '../lib/gameLogic';
 
 interface ParticlesProps {
@@ -64,6 +64,7 @@ export function Particles({ particles, onParticlesUpdate }: ParticlesProps) {
           count={colors.length / 3}
           array={colors}
           itemSize={3}
+          args={[colors, 3]}
         />
       </bufferGeometry>
       <pointsMaterial
