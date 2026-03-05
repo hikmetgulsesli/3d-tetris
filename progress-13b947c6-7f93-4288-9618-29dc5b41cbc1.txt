@@ -1,0 +1,35 @@
+=== US-001: Project setup with Next.js 14, Three.js, and design tokens ===
+COMPLETED: 2026-03-05T10:12:00Z
+FILES CHANGED:
+- app/globals.css (design tokens)
+- app/layout.tsx (Google Fonts)
+- app/page.tsx (main page with Three.js canvas)
+- components/three/ThreeCanvas.tsx
+- components/three/RotatingCube.tsx
+- __tests__/page.test.tsx
+- __tests__/ThreeCanvas.test.tsx
+- jest.config.ts
+- jest.setup.ts
+- .env.example
+- package.json (added typecheck and test scripts)
+- hooks/index.ts
+
+KEY DECISIONS:
+- Used @react-three/fiber v8 for React 18 compatibility
+- Created neon DevTool palette with CSS custom properties
+- Set up Jest with jsdom for component testing
+- Mocked Three.js components for testing since WebGL isn't available in jsdom
+
+DEPENDENCIES ADDED:
+- three
+- @react-three/fiber@8
+- @react-three/drei@9
+- jest
+- @testing-library/react
+- @testing-library/jest-dom
+- ts-jest
+- @types/three
+- @types/jest
+
+BRANCH: 13b947c6-US-001
+REPO: https://github.com/hikmetgulsesli/3d-tetris
