@@ -68,29 +68,29 @@ describe('checkCollision', () => {
   
   it('should return false for valid position', () => {
     const position: Position = { x: 4, y: 0 };
-    expect(checkCollision('O', position, 0, board)).toBe(false);
+    expect(checkCollision('O', 0, position, board)).toBe(false);
   });
   
   it('should return true for wall collision (left)', () => {
     const position: Position = { x: -1, y: 0 };
-    expect(checkCollision('O', position, 0, board)).toBe(true);
+    expect(checkCollision('O', 0, position, board)).toBe(true);
   });
   
   it('should return true for wall collision (right)', () => {
     const position: Position = { x: 9, y: 0 };
-    expect(checkCollision('O', position, 0, board)).toBe(true);
+    expect(checkCollision('O', 0, position, board)).toBe(true);
   });
   
   it('should return true for floor collision', () => {
     const position: Position = { x: 0, y: 19 };
-    expect(checkCollision('O', position, 0, board)).toBe(true);
+    expect(checkCollision('O', 0, position, board)).toBe(true);
   });
   
   it('should return true for collision with locked blocks', () => {
     board[5][5] = { filled: true, type: 'T' };
     
     const position: Position = { x: 4, y: 4 };
-    expect(checkCollision('O', position, 0, board)).toBe(true);
+    expect(checkCollision('O', 0, position, board)).toBe(true);
   });
 });
 

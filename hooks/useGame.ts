@@ -27,6 +27,7 @@ import {
   SOFT_DROP_SCORE,
   HARD_DROP_SCORE,
   LINE_CLEAR_SCORES,
+  calculateLineScore,
 } from '../types/game';
 import {
   checkSpawnCollision,
@@ -95,12 +96,7 @@ function createInitialState(config: GameConfig, highScore: number = 0): GameStat
   };
 }
 
-/** Calculate score for line clears with combo bonus */
-function calculateLineScore(lines: number, combo: number, level: number): number {
-  const baseScore = LINE_CLEAR_SCORES[lines] || 0;
-  const comboBonus = combo > 0 ? combo * 50 : 0;
-  return (baseScore + comboBonus) * level;
-}
+
 
 export interface UseGameOptions {
   config?: Partial<GameConfig>;
