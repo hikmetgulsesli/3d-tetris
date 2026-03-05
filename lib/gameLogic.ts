@@ -15,8 +15,8 @@ export const BOARD_HEIGHT = 20;
 export interface BoardCell {
   /** Whether the cell is filled */
   filled: boolean;
-  /** The tetromino type that filled this cell */
-  type?: TetrominoType;
+  /** The tetromino type that filled this cell (null when empty) */
+  type?: TetrominoType | null;
   /** Visual flag for line clearing animation */
   clearing?: boolean;
 }
@@ -41,7 +41,7 @@ export interface GameStateLegacy {
 /** Create an empty game board */
 export function createEmptyBoard(): Board {
   return Array(BOARD_HEIGHT).fill(null).map(() =>
-    Array(BOARD_WIDTH).fill(null).map(() => ({ filled: false }))
+    Array(BOARD_WIDTH).fill(null).map(() => ({ filled: false, type: null as TetrominoType | null }))
   );
 }
 
@@ -180,6 +180,42 @@ export function createInitialGameState(): GameStateLegacy {
     lines: 0,
     combo: 0,
     highScore: 0,
+  };
+}
+
+/** Extended game state for US-002 compatibility */
+export interface GameStateUS002 {
+  status: 'menu' | 'playing' | 'paused' | 'gameover';
+  board: Board;
+  currentPiece: null;
+  nextPieces: TetrominoType[];
+  holdPiece: TetrominoType | null;
+  hasHeld: boolean;
+  score: {
+    score: number;
+    level: number;
+    lines: number;
+    combo: number;
+    highScore: number;
+  };
+}
+
+/** Create initial game state for US-002 compatibility */
+export function createInitialGameStateUS002(): GameStateUS002 {
+  return {
+    status: 'menu',
+    board: createEmptyBoard(),
+    currentPiece: null,
+    nextPieces: [],
+    holdPiece: null,
+    hasHeld: false,
+    score: {
+      score: 0,
+      level: 1,
+      lines: 0,
+      combo: 0,
+      highScore: 0,
+    },
   };
 }
 

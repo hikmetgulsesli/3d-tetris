@@ -3,6 +3,14 @@
  */
 
 export { Particles } from './Particles';
+export {
+  HoldPiecePanel,
+  ControlsPanel,
+  ScorePanel,
+  NextPiecesPanel,
+  GameActionsPanel,
+  PiecePreview,
+} from './ui-panels';
 export { Block, GhostBlock, PreviewBlock } from './Block';
 export { StartScreen } from './StartScreen';
 export { PauseOverlay } from './PauseOverlay';
