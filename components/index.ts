@@ -2,6 +2,7 @@
  * Component exports
  */
 
+export { Particles } from './Particles';
 export { Block, GhostBlock, PreviewBlock } from './Block';
 export { StartScreen } from './StartScreen';
 export { PauseOverlay } from './PauseOverlay';

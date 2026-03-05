@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * Design Tokens - 3D Tetris
+ * Design System: Neon Arcade / CLI Dashboard
+ * Fonts: Space Grotesk (heading), DM Sans (body)
+ */
+
 :root {
   /* Background Colors */
   --color-bg-primary: #0a0a12;
@@ -107,6 +113,7 @@
   --foreground: #ffffff;
 }
 
+/* Base Styles */
 body {
   font-family: var(--font-body), 'DM Sans', sans-serif;
   background: var(--background);
@@ -119,7 +126,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Starfield background */
-.starfield {
+.starfield,
+.stars {
   position: fixed;
   top: 0;
   left: 0;
@@ -165,6 +173,26 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @layer components {
+  /* Glass-morphism panel style */
+  .panel {
+    background: var(--color-bg-panel);
+    border: var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .panel-title {
+    font-family: var(--font-heading);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    margin-bottom: var(--space-4);
+  }
+
   /* Primary Button */
   .btn-primary {
     font-family: var(--font-heading), 'Space Grotesk', sans-serif;
@@ -222,6 +250,53 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--color-text-primary);
     margin: 0 0.25rem;
   }
+}
+
+/* Utility Classes */
+.text-gradient-cyan {
+  background: linear-gradient(135deg, var(--color-accent-cyan), #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, var(--color-accent-purple), #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-red {
+  background: linear-gradient(135deg, var(--color-accent-red), #f87171);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gradient-panel {
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(18, 18, 31, 0.95));
+}
+
+.glow-cyan {
+  box-shadow: var(--shadow-glow-cyan);
+}
+
+.glow-purple {
+  box-shadow: var(--shadow-glow-purple);
+}
+
+.glow-green {
+  box-shadow: var(--shadow-glow-green);
+}
+
+.glow-red {
+  box-shadow: var(--shadow-glow-red);
+}
+
+/* Tabular nums for numeric alignment */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Animations */
