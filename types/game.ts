@@ -19,8 +19,8 @@ export type GameStatus = 'START' | 'PLAYING' | 'PAUSED' | 'GAME_OVER' | 'menu' |
 export interface BoardCell {
   /** Whether the cell is filled */
   filled: boolean;
-  /** The tetromino type that filled this cell */
-  type?: TetrominoType;
+  /** The tetromino type that filled this cell (null when empty) */
+  type?: TetrominoType | null;
   /** Visual flag for line clearing animation */
   clearing?: boolean;
 }
@@ -174,12 +174,14 @@ export {
   calculateLevel,
   createLineClearParticles,
   updateParticles,
-  createInitialGameState,
   loadHighScore,
   saveHighScore,
   isNewHighScore,
   processLineClear,
 } from '../lib/gameLogic';
+
+import { createInitialGameStateUS002 } from '../lib/gameLogic';
+export const createInitialGameState = createInitialGameStateUS002;
 
 /** Legacy GAME_CONFIG for backward compatibility with US-002 store */
 export const GAME_CONFIG = {
@@ -187,7 +189,7 @@ export const GAME_CONFIG = {
   BOARD_HEIGHT: 20,
   NEXT_PIECES_COUNT: 3,
   INITIAL_FALL_SPEED: 1000,
-  SPEED_INCREASE_PER_LEVEL: 0.05,
+  SPEED_INCREASE_PER_LEVEL: 0.1,
   LINES_PER_LEVEL: 10,
   LINE_SCORES: [100, 300, 500, 800] as const,
   COMBO_MULTIPLIER: 0.1,
