@@ -50,7 +50,7 @@ export function ControlBar({ gameState, onStart, onPause, onRestart }: ControlBa
           style={{
             background: isPaused 
               ? 'linear-gradient(135deg, var(--color-accent-green), var(--color-accent-green-dark))'
-              : 'linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-purple-dark)),'
+              : 'linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-purple-dark))',
           }}
           data-testid="control-pause"
         >
