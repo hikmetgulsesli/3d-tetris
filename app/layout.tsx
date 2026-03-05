@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "TETRIS 3D",
-  description: "Modern 3D Tetris Experience",
+  description: "A modern, visually stunning 3D Tetris experience",
 };
 
 export default function RootLayout({
@@ -13,10 +13,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
       <body className="antialiased">
         {children}
       </body>

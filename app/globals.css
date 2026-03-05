@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * Design Tokens - 3D Tetris
+ * Design System: Neon Arcade / CLI Dashboard
+ * Fonts: Space Grotesk (heading), DM Sans (body)
+ */
 :root {
   /* Background Colors */
   --color-bg-primary: #0a0a12;
@@ -13,10 +18,18 @@
   
   /* Accent Colors - Neon */
   --color-accent-cyan: #00f0ff;
+  --color-accent-cyan-dark: #00d4ff;
+  --color-accent-cyan-darker: #0099ff;
   --color-accent-purple: #a855f7;
+  --color-accent-purple-light: #c084fc;
+  --color-accent-purple-dark: #9333ea;
   --color-accent-green: #22c55e;
+  --color-accent-green-dark: #16a34a;
   --color-accent-yellow: #eab308;
+  --color-accent-yellow-dark: #ca8a04;
   --color-accent-red: #ef4444;
+  --color-accent-red-light: #f87171;
+  --color-accent-red-dark: #dc2626;
   --color-accent-orange: #f97316;
   --color-accent-blue: #3b82f6;
   
@@ -96,16 +109,68 @@
   --z-panel: 20;
   --z-overlay: 100;
   --z-modal: 200;
+
+  /* Default theme */
+  --background: #0a0a12;
+  --foreground: #ffffff;
 }
 
 body {
-  color: var(--color-text-primary);
-  background: var(--color-bg-primary);
-  font-family: var(--font-body);
+  font-family: var(--font-body), 'DM Sans', sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  overflow: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
+  font-family: var(--font-heading), 'Space Grotesk', sans-serif;
+}
+
+/* Starfield background */
+.starfield,
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1px 1px at 50px 90px, rgba(255,255,255,0.3), transparent),
+    radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1px 1px at 250px 120px, rgba(255,255,255,0.3), transparent),
+    radial-gradient(2px 2px at 300px 200px, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1px 1px at 400px 300px, rgba(255,255,255,0.3), transparent),
+    radial-gradient(2px 2px at 500px 400px, rgba(255,255,255,0.2), transparent);
+  background-repeat: repeat;
+  background-size: 600px 600px;
+  z-index: -1;
+}
+
+/* Nebula effects */
+.nebula {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.nebula-1 {
+  top: -200px;
+  right: -200px;
+  background: radial-gradient(circle, var(--color-accent-purple), transparent);
+}
+
+.nebula-2 {
+  bottom: -200px;
+  left: -200px;
+  background: radial-gradient(circle, var(--color-accent-cyan), transparent);
 }
 
 @layer components {
@@ -128,65 +193,69 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
     margin-bottom: var(--space-4);
   }
-  
-  /* Button styles */
-  .btn {
-    font-family: var(--font-heading);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    letter-spacing: 0.05em;
-  }
-  
+
+  /* Primary Button */
   .btn-primary {
-    background: linear-gradient(135deg, var(--color-accent-cyan), #0099ff);
-    color: #000;
-    box-shadow: var(--shadow-glow-cyan);
+    font-family: var(--font-heading), 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-purple-dark));
+    color: #fff;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
   }
-  
+
   .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 240, 255, 0.4);
+    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
   }
-  
+
+  /* Secondary Button */
   .btn-secondary {
+    font-family: var(--font-heading), 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.05em;
     background: var(--color-bg-card);
     color: var(--color-text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   .btn-secondary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
   }
-}
 
-/* Starfield background */
-.stars {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background-image: 
-    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
-    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
-    radial-gradient(1px 1px at 50px 90px, rgba(255,255,255,0.3), transparent),
-    radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.2), transparent);
-  background-repeat: repeat;
-  background-size: 400px 400px;
-  z-index: var(--z-background);
+  /* Key Badge */
+  .key-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 24px;
+    padding: 0 0.5rem;
+    background: var(--color-bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    font-family: var(--font-heading), 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    color: var(--color-text-primary);
+    margin: 0 0.25rem;
+  }
 }
 
 /* Utility classes for text gradients */
 .text-gradient-cyan {
-  background: linear-gradient(135deg, var(--color-accent-cyan), #00d4ff);
+  background: linear-gradient(135deg, var(--color-accent-cyan), var(--color-accent-cyan-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

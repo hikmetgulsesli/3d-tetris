@@ -13,11 +13,11 @@ import type {
   TetrominoType,
 } from '../types';
 import {
-  createEmptyBoard,
   createInitialScoreState,
   GAME_CONFIG,
 } from '../types';
 import { getRandomTetrominoType, getSpawnOffset } from '../lib/tetrominos';
+import { createEmptyBoard } from '../lib/gameLogic';
 
 /** Game state type alias for UI compatibility */
 export type GameState = 'start' | 'playing' | 'paused' | 'gameover';
