@@ -1,0 +1,18 @@
+=== US-005: Keyboard input handling ===
+COMPLETED: 2026-03-05T13:19:00+00:00
+FILES_CHANGED:
+  - types/keyboard.ts (new)
+  - hooks/useKeyboard.ts (new)
+  - hooks/index.ts (new)
+  - __tests__/keyboard.test.ts (new)
+  - vitest.config.ts (new)
+  - package.json (modified - added typecheck script)
+KEY_DECISIONS:
+  - Used window event listeners for keyboard input (not React Three Fiber's useFrame) for better browser compatibility
+  - Implemented configurable key repeat with 200ms initial delay and 50ms repeat interval
+  - Used React refs to track pressed keys and timeouts to avoid stale closures
+  - Prevent default browser behavior for game keys to avoid page scrolling
+  - Handle window blur to clear all key states (prevents stuck keys when tab loses focus)
+DEPENDENCIES_ADDED: None (used existing vitest setup)
+
+PR_URL: https://github.com/hikmetgulsesli/3d-tetris/pull/3

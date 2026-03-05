@@ -2,4 +2,4 @@
  * Component exports
  */
 
-export { Block, GhostBlock, PreviewBlock } from './Block';
+export { Particles } from './Particles';
