@@ -152,12 +152,26 @@ export function useTouchControls({
     hasTriggeredHoldRef.current = false;
   }, [clearHoldTimeout]);
 
-  // Set up event listeners on the game board element
+  // Set up event listeners on window
   useEffect(() => {
+    if (!enabled) {
+      clearHoldTimeout();
+      return;
+    }
+
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
+    window.addEventListener('touchcancel', handleTouchCancel);
+
     return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchcancel', handleTouchCancel);
       clearHoldTimeout();
     };
-  }, [clearHoldTimeout]);
+  }, [enabled, handleTouchStart, handleTouchMove, handleTouchEnd, handleTouchCancel, clearHoldTimeout]);
 
   return {
     isEnabled: enabled,

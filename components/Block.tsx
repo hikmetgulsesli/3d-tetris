@@ -15,7 +15,6 @@
 
 import React, { memo, useRef } from 'react';
 import { RoundedBox } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { TetrominoType } from '../types/tetromino';
 import { TETROMINO_COLORS } from '../types/tetromino';
@@ -144,15 +143,6 @@ export const PieceTrail = memo(function PieceTrail({
   width = 0.5,
 }: TrailProps) {
   const ref = useRef<THREE.Group>(null);
-  
-  // Animate trail visibility
-  useFrame((state) => {
-    if (ref.current) {
-      // Subtle pulsing effect on trail intensity
-      const intensity = 0.5 + Math.sin(state.clock.elapsedTime * 10) * 0.1;
-      ref.current.userData.intensity = intensity;
-    }
-  });
 
   // Simplified trail using custom geometry
   // Full Trail component from Drei can be heavy, so we use a lighter approach

@@ -34,6 +34,7 @@ export const MuteButton = memo(function MuteButton({
       type="button"
       onClick={onToggle}
       aria-label={enabled ? 'Mute sound' : 'Unmute sound'}
+      className={enabled ? 'mute-btn' : 'mute-btn muted'}
       style={{
         width: size,
         height: size,
@@ -46,19 +47,9 @@ export const MuteButton = memo(function MuteButton({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        transition: 'all 0.2s ease',
+        transition: 'background-color 0.2s ease',
         touchAction: 'manipulation',
         WebkitTapHighlightColor: 'transparent',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = enabled 
-          ? 'rgba(0, 240, 255, 0.2)' 
-          : 'rgba(239, 68, 68, 0.2)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = enabled 
-          ? 'rgba(0, 240, 255, 0.1)' 
-          : 'rgba(239, 68, 68, 0.1)';
       }}
     >
       {enabled ? (

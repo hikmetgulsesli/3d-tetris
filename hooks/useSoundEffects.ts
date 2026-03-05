@@ -79,6 +79,15 @@ export function useSoundEffects(options: UseSoundEffectsOptions = {}): SoundEffe
     }
   }, [enabled]);
 
+  // Cleanup audio context on unmount
+  useEffect(() => {
+    return () => {
+      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+        audioContextRef.current.close();
+      }
+    };
+  }, []);
+
   /**
    * Play a synthesized line clear chime
    */
