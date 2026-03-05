@@ -163,20 +163,3 @@ export function calculateLineScore(linesCleared: number, combo: number, level: n
 export function calculateLineClearScore(linesCleared: number, level: number, combo: number): number {
   return calculateLineScore(linesCleared, combo, level);
 }
-
-// Re-export from gameLogic
-export {
-  createEmptyBoard,
-  isRowComplete,
-  findCompleteRows,
-  clearRows,
-  calculateFallSpeed,
-  calculateLevel,
-  createLineClearParticles,
-  updateParticles,
-  createInitialGameState,
-  loadHighScore,
-  saveHighScore,
-  isNewHighScore,
-  processLineClear,
-} from '../lib/gameLogic';

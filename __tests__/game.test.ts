@@ -7,13 +7,15 @@
 import { describe, it, expect } from 'vitest';
 import {
   getFallSpeed,
-  createEmptyBoard,
-  calculateLineScore,
   LINE_CLEAR_SCORES,
   SOFT_DROP_SCORE,
   HARD_DROP_SCORE,
   DEFAULT_GAME_CONFIG,
+  calculateLineScore,
 } from '../types/game';
+import {
+  createEmptyBoard,
+} from '../lib/gameLogic';
 
 describe('DEFAULT_GAME_CONFIG', () => {
   it('should have correct default values', () => {

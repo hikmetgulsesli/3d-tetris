@@ -1,73 +1,12 @@
 /**
- * Game Board Types and Logic
+ * Game Board Logic
  * 
  * US-007: Line clearing, scoring, and particle effects
  */
 
-import type { TetrominoType, Position, Cell } from '../types/tetromino';
-
-/** Game board dimensions */
-export const BOARD_WIDTH = 10;
-export const BOARD_HEIGHT = 20;
-
-/** A single cell in the game board */
-export interface BoardCell {
-  /** Whether the cell is filled */
-  filled: boolean;
-  /** The tetromino type that filled this cell */
-  type?: TetrominoType;
-  /** Visual flag for line clearing animation */
-  clearing?: boolean;
-}
-
-/** The game board as a 2D array */
-export type Board = BoardCell[][];
-
-/** Game state */
-export interface GameState {
-  /** Current score */
-  score: number;
-  /** Current level */
-  level: number;
-  /** Total lines cleared */
-  lines: number;
-  /** Current combo count */
-  combo: number;
-  /** High score from localStorage */
-  highScore: number;
-  /** Whether the game is paused */
-  isPaused: boolean;
-  /** Whether the game is over */
-  isGameOver: boolean;
-  /** Whether the game has started */
-  isStarted: boolean;
-}
-
-/** Particle for line clear effect */
-export interface Particle {
-  id: string;
-  x: number;
-  y: number;
-  z: number;
-  vx: number;
-  vy: number;
-  vz: number;
-  color: string;
-  life: number;
-  maxLife: number;
-}
-
-/** Line clear result */
-export interface LineClearResult {
-  /** Number of lines cleared */
-  linesCleared: number;
-  /** Score earned */
-  scoreEarned: number;
-  /** Whether it was a Tetris (4 lines) */
-  isTetris: boolean;
-  /** Row indices that were cleared */
-  clearedRows: number[];
-}
+import type { TetrominoType } from '../types/tetromino';
+import type { Board, Particle } from '../types/game';
+import { BOARD_WIDTH, BOARD_HEIGHT } from '../types/game';
 
 /** Create an empty game board */
 export function createEmptyBoard(): Board {
@@ -203,20 +142,6 @@ export function updateParticles(particles: Particle[]): Particle[] {
     .filter(p => p.life > 0);
 }
 
-/** Initial game state */
-export function createInitialGameState(): GameState {
-  return {
-    score: 0,
-    level: 1,
-    lines: 0,
-    combo: 0,
-    highScore: 0,
-    isPaused: false,
-    isGameOver: false,
-    isStarted: false,
-  };
-}
-
 /** Load high score from localStorage */
 export function loadHighScore(): number {
   if (typeof window === 'undefined') return 0;
@@ -241,60 +166,4 @@ export function saveHighScore(score: number): void {
 /** Check if new high score */
 export function isNewHighScore(score: number, highScore: number): boolean {
   return score > highScore;
-}
-
-/** Process line clear and update game state */
-export function processLineClear(
-  board: Board,
-  gameState: GameState
-): { board: Board; gameState: GameState; result: LineClearResult; particles: Particle[] } {
-  const completeRows = findCompleteRows(board);
-  const linesCleared = completeRows.length;
-  
-  if (linesCleared === 0) {
-    return {
-      board,
-      gameState: { ...gameState, combo: 0 }, // Reset combo
-      result: { linesCleared: 0, scoreEarned: 0, isTetris: false, clearedRows: [] },
-      particles: [],
-    };
-  }
-  
-  // Calculate new combo and score
-  const newCombo = gameState.combo + 1;
-  const scoreEarned = calculateLineClearScore(linesCleared, gameState.level, newCombo);
-  const newScore = gameState.score + scoreEarned;
-  const newLines = gameState.lines + linesCleared;
-  const newLevel = calculateLevel(newLines);
-  
-  // Update high score if needed
-  const newHighScore = Math.max(newScore, gameState.highScore);
-  if (newHighScore > gameState.highScore) {
-    saveHighScore(newHighScore);
-  }
-  
-  // Clear the rows
-  const newBoard = clearRows(board, completeRows);
-  
-  // Create particles
-  const particles = createLineClearParticles(completeRows, board);
-  
-  return {
-    board: newBoard,
-    gameState: {
-      ...gameState,
-      score: newScore,
-      level: newLevel,
-      lines: newLines,
-      combo: newCombo,
-      highScore: newHighScore,
-    },
-    result: {
-      linesCleared,
-      scoreEarned,
-      isTetris: linesCleared === 4,
-      clearedRows: completeRows,
-    },
-    particles,
-  };
 }

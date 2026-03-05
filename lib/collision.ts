@@ -4,18 +4,13 @@
  * US-006/US-007: Piece movement, collision detection, line clearing
  */
 
-import type { ActiveTetromino, Position, Rotation, TetrominoType, Cell } from '../types/tetromino';
+import type { ActiveTetromino, Position, Rotation, TetrominoType } from '../types/tetromino';
 import type { Board, BoardCell } from '../types/game';
 import { BOARD_WIDTH, BOARD_HEIGHT } from '../types/game';
 import { TETROMINOS } from './tetrominos';
 
 // Re-export board constants for backwards compatibility
 export { BOARD_WIDTH, BOARD_HEIGHT } from '../types/game';
-
-/** Check if a position is within board bounds (alias for isWithinBounds) */
-export function isInBounds(x: number, y: number): boolean {
-  return x >= 0 && x < BOARD_WIDTH && y >= 0 && y < BOARD_HEIGHT;
-}
 
 /** Check if a position is within board bounds */
 export function isWithinBounds(x: number, y: number): boolean {
@@ -49,36 +44,7 @@ export function checkCollision(
   rotation: Rotation,
   position: Position,
   board: Board
-): boolean;
-export function checkCollision(
-  type: TetrominoType,
-  position: Position,
-  rotation: Rotation,
-  board: Board
-): boolean;
-export function checkCollision(
-  type: TetrominoType,
-  arg2: Rotation | Position,
-  arg3: Position | Rotation | Board,
-  arg4?: Board
 ): boolean {
-  // Handle both signature variants
-  let rotation: Rotation;
-  let position: Position;
-  let board: Board;
-  
-  if (typeof arg2 === 'number') {
-    // First signature: type, rotation, position, board
-    rotation = arg2;
-    position = arg3 as Position;
-    board = arg4 as Board;
-  } else {
-    // Second signature: type, position, rotation, board
-    position = arg2;
-    rotation = arg3 as Rotation;
-    board = arg4 as Board;
-  }
-
   const piece = TETROMINOS[type];
   const cells = piece.rotations[rotation];
 

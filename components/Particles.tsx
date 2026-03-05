@@ -10,9 +10,9 @@
 
 import { useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Points, PointMaterial } from '@react-three/drei';
+import { Points } from '@react-three/drei';
 import * as THREE from 'three';
-import type { Particle } from '../lib/gameLogic';
+import type { Particle } from '../types/game';
 import { updateParticles } from '../lib/gameLogic';
 
 interface ParticlesProps {
@@ -38,17 +38,15 @@ export function Particles({ particles, onParticlesUpdate }: ParticlesProps) {
   const { positions, colors } = useMemo(() => {
     const pos = new Float32Array(particles.length * 3);
     const col = new Float32Array(particles.length * 3);
+    const tempColor = new THREE.Color();
 
     particles.forEach((particle, i) => {
       pos[i * 3] = particle.x;
       pos[i * 3 + 1] = particle.y;
       pos[i * 3 + 2] = particle.z;
 
-      // Parse hex color to RGB
-      const hex = particle.color.replace('#', '');
-      col[i * 3] = parseInt(hex.substring(0, 2), 16) / 255;
-      col[i * 3 + 1] = parseInt(hex.substring(2, 4), 16) / 255;
-      col[i * 3 + 2] = parseInt(hex.substring(4, 6), 16) / 255;
+      // Parse hex color to RGB using Three.js Color
+      tempColor.set(particle.color).toArray(col, i * 3);
     });
 
     return { positions: pos, colors: col };
@@ -61,9 +59,7 @@ export function Particles({ particles, onParticlesUpdate }: ParticlesProps) {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-color"
-          count={colors.length / 3}
-          array={colors}
-          itemSize={3}
+          args={[colors, 3]}
         />
       </bufferGeometry>
       <pointsMaterial
