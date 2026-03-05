@@ -305,3 +305,27 @@ h1, h2, h3, h4, h5, h6 {
     font-variant-numeric: tabular-nums;
   }
 }
+
+/* Mobile-specific styles */
+@media (max-width: 1023px) {
+  .tetris-page {
+    padding: 8px !important;
+  }
+}
+
+/* Ensure touch targets are at least 44x44px */
+.touch-btn {
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+
+/* Prevent text selection on touch controls */
+.touch-controls {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Smooth transitions for mobile layout - apply only to specific elements */
+.tetris-page .transition-colors {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}

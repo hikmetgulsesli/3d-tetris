@@ -18,3 +18,5 @@ export { GameOverScreen } from './GameOverScreen';
 export { ControlBar } from './ControlBar';
 export { GameBoard } from './GameBoard';
 export { Game } from './Game';
+export { TouchControls } from './TouchControls';
+export type { TouchControlsProps } from './TouchControls';
