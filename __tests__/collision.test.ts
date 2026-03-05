@@ -223,7 +223,7 @@ describe('lockPiece', () => {
     const piece: ActiveTetromino = { type: 'O', rotation: 0, position: { x: 4, y: 0 } };
     const newBoard = lockPiece(piece, board);
     
-    expect(board[0][4]).toEqual({ filled: false });
+    expect(board[0][4]).toEqual({ filled: false, type: null });
     expect(newBoard[0][4]).toEqual({ filled: true, type: 'O' });
   });
 });
