@@ -1,0 +1,46 @@
+<<<<<<< HEAD
+=== US-007: Line clearing, scoring, and particle effects ===
+COMPLETED: 2026-03-05T13:40:00+00:00
+FILES_CHANGED:
+  - lib/gameLogic.ts (new) - Line clearing, scoring, particle effects, localStorage
+  - lib/collision.ts (new) - Collision detection, piece movement, rotation
+  - hooks/useGame.ts (new) - Game state management hook
+  - components/Particles.tsx (new) - Particle effect component
+  - types/game.ts (new) - Game types and constants
+  - lib/index.ts (new) - Library exports
+  - __tests__/collision.test.ts (new) - Collision tests
+  - __tests__/game.test.ts (new) - Game logic tests
+  - __tests__/gameLogic.test.ts (updated) - Extended tests
+  - __tests__/setup.ts (updated) - Fixed TypeScript issues
+  - types/game.ts (updated) - Added exports
+  - hooks/useGame.ts (updated) - Fixed imports
+  - lib/collision.ts (updated) - Added missing exports
+  - components/index.ts (updated) - Added Particles export
+KEY_DECISIONS:
+  - Separated collision logic into its own module for better organization
+  - Used combo multiplier (10% per combo) for consecutive line clears
+  - Implemented particle effects with simple physics (gravity, velocity)
+  - High score persisted in localStorage with proper SSR safety checks
+DEPENDENCIES_ADDED: None (used existing Three.js/React Three Fiber setup)
+
+PR_URL: https://github.com/hikmetgulsesli/3d-tetris/pull/4
+=======
+=== US-005: Keyboard input handling ===
+COMPLETED: 2026-03-05T13:19:00+00:00
+FILES_CHANGED:
+  - types/keyboard.ts (new)
+  - hooks/useKeyboard.ts (new)
+  - hooks/index.ts (new)
+  - __tests__/keyboard.test.ts (new)
+  - vitest.config.ts (new)
+  - package.json (modified - added typecheck script)
+KEY_DECISIONS:
+  - Used window event listeners for keyboard input (not React Three Fiber's useFrame) for better browser compatibility
+  - Implemented configurable key repeat with 200ms initial delay and 50ms repeat interval
+  - Used React refs to track pressed keys and timeouts to avoid stale closures
+  - Prevent default browser behavior for game keys to avoid page scrolling
+  - Handle window blur to clear all key states (prevents stuck keys when tab loses focus)
+DEPENDENCIES_ADDED: None (used existing vitest setup)
+
+PR_URL: https://github.com/hikmetgulsesli/3d-tetris/pull/3
+>>>>>>> 13b947c6-US-007

@@ -13,7 +13,8 @@ export type GameAction =
   | 'ROTATE_CW'
   | 'ROTATE_CCW'
   | 'HOLD'
-  | 'PAUSE';
+  | 'PAUSE'
+  | 'CONFIRM';
 
 /** Keyboard event handler type */
 export type KeyboardHandler = (action: GameAction) => void;
@@ -57,6 +58,9 @@ export const KEY_MAPPINGS: Record<string, GameAction> = {
   p: 'PAUSE',
   P: 'PAUSE',
   Escape: 'PAUSE',
+  
+  // Confirm/Start
+  Enter: 'CONFIRM',
 };
 
 /** Set of keys that should have repeat behavior */
@@ -70,4 +74,5 @@ export const PREVENT_DEFAULT_KEYS = new Set([
   'ArrowUp',
   ' ',
   'Escape',
+  'Enter',
 ]);
