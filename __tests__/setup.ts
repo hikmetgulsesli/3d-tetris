@@ -16,8 +16,8 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Mock canvas
-HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
+// Mock canvas - use any to avoid type issues
+const mockContext = {
   fillRect: vi.fn(),
   clearRect: vi.fn(),
   getImageData: vi.fn(() => ({ data: new Array(4) })),
@@ -42,8 +42,14 @@ HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
   transform: vi.fn(),
   rect: vi.fn(),
   clip: vi.fn(),
-}));
+};
 
-// Mock requestAnimationFrame
-global.requestAnimationFrame = vi.fn((callback) => setTimeout(callback, 0));
-global.cancelAnimationFrame = vi.fn((id) => clearTimeout(id));
+(HTMLCanvasElement.prototype.getContext as any) = vi.fn(() => mockContext);
+
+// Mock requestAnimationFrame - use any to avoid type issues
+(global as any).requestAnimationFrame = vi.fn((callback: FrameRequestCallback) => 
+  setTimeout(callback, 0)
+);
+(global as any).cancelAnimationFrame = vi.fn((id: number) => 
+  clearTimeout(id)
+);
