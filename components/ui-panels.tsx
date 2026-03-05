@@ -75,6 +75,20 @@ export function PiecePreview({ type, size = 'medium' }: PiecePreviewProps) {
   const blockSize = size === 'small' ? 14 : size === 'large' ? 22 : 18;
   const gap = size === 'small' ? 1 : 2;
   
+  // Find bounding box of the shape
+  let minRow = 4, maxRow = 0, minCol = 4, maxCol = 0;
+  shape.forEach((row, r) => {
+    row.forEach((cell, c) => {
+      if (cell) {
+        minRow = Math.min(minRow, r);
+        maxRow = Math.max(maxRow, r);
+        minCol = Math.min(minCol, c);
+        maxCol = Math.max(maxCol, c);
+      }
+    });
+  });
+  
+  
   return (
     <div
       className="piece-preview"
@@ -85,12 +99,12 @@ export function PiecePreview({ type, size = 'medium' }: PiecePreviewProps) {
         gap: `${gap}px`,
       }}
     >
-      {shape.flat().map((cell, index) => {
+      {shape.flat().map((cell, idx) => {
         const isFilled = cell === 1;
         
         return (
           <div
-            key={index}
+            key={idx}
             style={{
               width: blockSize,
               height: blockSize,

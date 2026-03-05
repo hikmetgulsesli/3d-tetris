@@ -9,42 +9,18 @@ import {
   NextPiecesPanel,
   GameActionsPanel,
 } from '../components';
+import { useGameStore } from '../store';
+import { getRandomTetrominoType } from '../lib/tetrominos';
+import type { TetrominoType } from '../types';
 
-// Mock store for UI demonstration
-const useMockStore = () => {
-  const [gameState, setGameState] = useState<'start' | 'playing' | 'paused' | 'gameover'>('start');
-  const [score, setScore] = useState(0);
-  const [level, setLevel] = useState(1);
-  const [lines, setLines] = useState(0);
-  const [combo, setCombo] = useState(0);
-  const [highScore] = useState(45200);
-  const [holdPiece] = useState<'I' | 'O' | 'T' | 'S' | 'Z' | 'J' | 'L' | null>('J');
-  const [nextPieces] = useState<('I' | 'O' | 'T' | 'S' | 'Z' | 'J' | 'L')[]>(['T', 'I', 'S']);
-
-  const startGame = () => setGameState('playing');
-  const pauseGame = () => setGameState(prev => prev === 'playing' ? 'paused' : 'playing');
-  const restartGame = () => {
-    setGameState('playing');
-    setScore(0);
-    setLevel(1);
-    setLines(0);
-    setCombo(0);
-  };
-
-  return {
-    gameState,
-    score,
-    level,
-    lines,
-    combo,
-    highScore,
-    holdPiece,
-    nextPieces,
-    startGame,
-    pauseGame,
-    restartGame,
-  };
-};
+// Generate initial next pieces
+function generateNextPieces(count: number): TetrominoType[] {
+  const pieces: TetrominoType[] = [];
+  for (let i = 0; i < count; i++) {
+    pieces.push(getRandomTetrominoType());
+  }
+  return pieces;
+}
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -56,22 +32,27 @@ export default function Home() {
     lines,
     combo,
     highScore,
-    holdPiece,
     nextPieces,
+    holdPiece,
     startGame,
     pauseGame,
     restartGame,
-  } = useMockStore();
+    setNextPieces,
+  } = useGameStore();
 
+  // Initialize next pieces on mount
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if (nextPieces.length === 0) {
+      setNextPieces(generateNextPieces(5));
+    }
+  }, [nextPieces.length, setNextPieces]);
 
   const handleStart = () => {
     if (gameState === 'start') {
       startGame();
     } else if (gameState === 'paused') {
-      pauseGame();
+      pauseGame(); // Toggle
     }
   };
 
@@ -84,7 +65,7 @@ export default function Home() {
   };
 
   if (!mounted) {
-    return null;
+    return null; // Prevent hydration mismatch
   }
 
   return (
