@@ -17,6 +17,7 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Mock canvas
+// @ts-expect-error - Mock canvas context for testing
 HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
   fillRect: vi.fn(),
   clearRect: vi.fn(),
@@ -45,5 +46,5 @@ HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
 }));
 
 // Mock requestAnimationFrame
-global.requestAnimationFrame = vi.fn((callback) => setTimeout(callback, 0));
-global.cancelAnimationFrame = vi.fn((id) => clearTimeout(id));
+global.requestAnimationFrame = vi.fn((callback: FrameRequestCallback) => window.setTimeout(callback, 0));
+global.cancelAnimationFrame = vi.fn((id: number) => clearTimeout(id));
