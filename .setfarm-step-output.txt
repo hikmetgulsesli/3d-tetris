@@ -1,7 +1,5 @@
 STATUS: done
-STITCH_PROJECT_ID: 11491385922945688247
-DEVICE_TYPE: DESKTOP
-SCREENS_GENERATED: 4
-DESIGN_MANIFEST: stitch/DESIGN_MANIFEST.json
-DESIGN_TOKENS: stitch/design-tokens.css
-DESIGN_NOTES: Generated 4 screens for 3D Tetris game: Start Screen (neon arcade theme with TETRIS 3D title), Playing Screen (full game UI with side panels, score, next pieces), Paused Screen (overlay with pulsing PAUSED text), Game Over Screen (dramatic final score display). Colors: deep black background with neon cyan, purple, and accent colors matching tetromino pieces. Fonts: Space Grotesk headings, DM Sans for UI elements. All screens use neon-arcade aesthetic with glow effects.
+STORY_BRANCH: 13b947c6-US-005
+PR_URL: https://github.com/hikmetgulsesli/3d-tetris/pull/3
+CHANGES: Implemented keyboard input handling with useKeyboard hook. Created types/keyboard.ts with key mappings for all game actions (MOVE_LEFT, MOVE_RIGHT, SOFT_DROP, HARD_DROP, ROTATE_CW, ROTATE_CCW, HOLD, PAUSE). Arrow keys for movement, Space for hard drop, Z/X/ArrowUp for rotation, C for hold, P/Escape for pause. Configurable key repeat with 200ms initial delay and 50ms repeat interval.
+TESTS: Created comprehensive test suite in __tests__/keyboard.test.ts with 38 tests covering key mappings, key repeat behavior, prevent default functionality, and window blur handling. All 94 tests pass (including existing tests).
