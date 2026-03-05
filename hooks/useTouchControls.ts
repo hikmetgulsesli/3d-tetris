@@ -154,28 +154,10 @@ export function useTouchControls({
 
   // Set up event listeners on the game board element
   useEffect(() => {
-    if (!enabled) {
-      return;
-    }
-
-    // Use querySelector to find the game board element
-    const gameBoard = document.querySelector('.game-board');
-    if (!gameBoard) return;
-
-    const options: AddEventListenerOptions = { passive: false };
-    gameBoard.addEventListener('touchstart', handleTouchStart as EventListener, options);
-    gameBoard.addEventListener('touchmove', handleTouchMove as EventListener, options);
-    gameBoard.addEventListener('touchend', handleTouchEnd as EventListener, options);
-    gameBoard.addEventListener('touchcancel', handleTouchCancel as EventListener, options);
-
     return () => {
       clearHoldTimeout();
-      gameBoard.removeEventListener('touchstart', handleTouchStart as EventListener);
-      gameBoard.removeEventListener('touchmove', handleTouchMove as EventListener);
-      gameBoard.removeEventListener('touchend', handleTouchEnd as EventListener);
-      gameBoard.removeEventListener('touchcancel', handleTouchCancel as EventListener);
     };
-  }, [enabled, handleTouchStart, handleTouchMove, handleTouchEnd, handleTouchCancel, clearHoldTimeout]);
+  }, [clearHoldTimeout]);
 
   return {
     isEnabled: enabled,
