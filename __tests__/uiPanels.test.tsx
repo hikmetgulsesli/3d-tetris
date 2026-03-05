@@ -248,7 +248,7 @@ describe('GameControls', () => {
     expect(screen.getByText('Pause')).toBeDefined();
   });
   
-  it('shows resume and restart buttons when paused', () => {
+  it('shows resume and restart buttons when paused', async () => {
     function PausedGame() {
       const { startGame, pauseGame } = useGame();
       
@@ -266,10 +266,8 @@ describe('GameControls', () => {
       </TestWrapper>
     );
     
-    // Wait for state update
-    setTimeout(() => {
-      expect(screen.getByText('Resume')).toBeDefined();
-      expect(screen.getByText('Restart')).toBeDefined();
-    }, 50);
+    // Wait for state update using findBy for async waiting
+    expect(await screen.findByText('Resume')).toBeDefined();
+    expect(await screen.findByText('Restart')).toBeDefined();
   });
 });

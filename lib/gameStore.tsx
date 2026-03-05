@@ -6,7 +6,7 @@
 
 'use client';
 
-import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react';
 import type { TetrominoType } from '../types/tetromino';
 
 export type GameStatus = 'START' | 'PLAYING' | 'PAUSED' | 'GAME_OVER';
@@ -71,9 +71,6 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       };
     case 'GAME_OVER':
       const newHighScore = Math.max(state.score, state.highScore);
-      if (newHighScore > state.highScore) {
-        localStorage.setItem('tetris-high-score', newHighScore.toString());
-      }
       return { ...state, status: 'GAME_OVER', highScore: newHighScore };
     case 'UPDATE_SCORE': {
       const { score, lines, combo } = action.payload;
@@ -102,7 +99,12 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 
 function generateNextPieces(): TetrominoType[] {
   const pieces: TetrominoType[] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'];
-  const shuffled = [...pieces].sort(() => Math.random() - 0.5);
+  // Fisher-Yates shuffle for unbiased randomization
+  const shuffled = [...pieces];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
   return shuffled.slice(0, 3);
 }
 
@@ -122,6 +124,12 @@ const GameContext = createContext<GameContextType | null>(null);
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(gameReducer, initialState);
+  const stateRef = useRef(state);
+
+  // Keep ref in sync with state for access in callbacks
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   // Load high score from localStorage on mount
   useEffect(() => {
@@ -148,6 +156,11 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const gameOver = useCallback(() => {
+    const currentState = stateRef.current;
+    const newHighScore = Math.max(currentState.score, currentState.highScore);
+    if (newHighScore > currentState.highScore) {
+      localStorage.setItem('tetris-high-score', newHighScore.toString());
+    }
     dispatch({ type: 'GAME_OVER' });
   }, []);
 
