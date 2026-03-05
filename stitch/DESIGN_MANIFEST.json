@@ -1,0 +1,87 @@
+{
+  "project": "3d-tetris",
+  "designSystem": {
+    "aesthetic": "neon-arcade",
+    "palette": "DevTool / CLI Dashboard (dark theme with neon accents)",
+    "headingFont": "Space Grotesk",
+    "bodyFont": "DM Sans",
+    "iconLibrary": "Lucide React"
+  },
+  "screens": [
+    {
+      "id": "start",
+      "name": "Start Screen",
+      "file": "stitch/screen-start.html",
+      "description": "Game start screen with animated title and press enter prompt",
+      "states": ["initial"]
+    },
+    {
+      "id": "playing",
+      "name": "Playing Screen",
+      "file": "stitch/screen-playing.html",
+      "description": "Main game screen with 3D game area, side panels for hold piece, score, level, lines, next pieces, and controls",
+      "states": ["playing"]
+    },
+    {
+      "id": "paused",
+      "name": "Paused Screen",
+      "file": "stitch/screen-paused.html",
+      "description": "Pause overlay with blurred background game, resume and restart buttons",
+      "states": ["paused"]
+    },
+    {
+      "id": "gameover",
+      "name": "Game Over Screen",
+      "file": "stitch/screen-gameover.html",
+      "description": "Game over screen with final score, high score comparison, stats grid, and play again button",
+      "states": ["game-over"]
+    }
+  ],
+  "colorTokens": {
+    "background": {
+      "primary": "#0a0a12",
+      "secondary": "#12121f",
+      "card": "#1a1a2e",
+      "panel": "rgba(26, 26, 46, 0.8)"
+    },
+    "accent": {
+      "cyan": "#00f0ff",
+      "purple": "#a855f7",
+      "green": "#22c55e",
+      "yellow": "#eab308",
+      "red": "#ef4444",
+      "orange": "#f97316",
+      "blue": "#3b82f6"
+    },
+    "text": {
+      "primary": "#ffffff",
+      "secondary": "#94a3b8"
+    },
+    "tetrominoes": {
+      "I": "#00f0ff",
+      "O": "#eab308",
+      "T": "#a855f7",
+      "S": "#22c55e",
+      "Z": "#ef4444",
+      "J": "#3b82f6",
+      "L": "#f97316"
+    }
+  },
+  "typography": {
+    "heading": "Space Grotesk",
+    "body": "DM Sans",
+    "sizes": {
+      "xs": "0.75rem",
+      "sm": "0.85rem",
+      "base": "1rem",
+      "lg": "1.5rem",
+      "xl": "2rem",
+      "2xl": "3rem",
+      "3xl": "4rem",
+      "4xl": "6rem"
+    }
+  },
+  "deviceType": "DESKTOP",
+  "screensGenerated": 4,
+  "stitchProjectId": "11491385922945688247"
+}
