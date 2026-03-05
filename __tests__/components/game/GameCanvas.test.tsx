@@ -14,13 +14,9 @@ jest.mock('@react-three/drei', () => ({
 }));
 
 describe('GameCanvas Component', () => {
-  it('renders the canvas container', () => {
+  it('renders the canvas container and orbit controls', () => {
     render(<GameCanvas />);
     expect(screen.getByTestId('r3f-canvas')).toBeInTheDocument();
-  });
-
-  it('renders orbit controls', () => {
-    render(<GameCanvas />);
     expect(screen.getByTestId('orbit-controls')).toBeInTheDocument();
   });
 });

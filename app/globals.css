@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
-
 :root {
   /* Neon Design Tokens - DevTool Pro Palette */
   --neon-primary: #d4ff00;
@@ -37,21 +35,16 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  
   html {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-dm-sans), sans-serif;
   }
   
   body {
     @apply bg-[var(--bg-primary)] text-[var(--text-primary)] antialiased;
-    font-family: 'DM Sans', sans-serif;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: var(--font-space-grotesk), sans-serif;
     @apply font-semibold tracking-tight;
   }
 }
@@ -85,10 +78,10 @@
   }
   
   .font-display {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: var(--font-space-grotesk), sans-serif;
   }
   
   .font-body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-dm-sans), sans-serif;
   }
 }
