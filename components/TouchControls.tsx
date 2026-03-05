@@ -2,6 +2,7 @@
  * Touch Controls Component
  * 
  * US-011: Mobile responsive with touch controls
+ * US-012: React.memo optimization
  * 
  * On-screen buttons for mobile gameplay:
  * - Hold button
@@ -12,7 +13,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 import { GameAction } from '../types/keyboard';
 
 export interface TouchControlsProps {
@@ -30,8 +31,9 @@ export interface TouchControlsProps {
  * Mobile touch control buttons
  * Provides on-screen buttons for Hold, Pause, and Hard Drop
  * All buttons meet minimum 44x44px touch target requirement
+ * Optimized with React.memo to prevent unnecessary re-renders
  */
-export function TouchControls({
+export const TouchControls = memo(function TouchControls({
   onAction,
   enabled = true,
   isPaused = false,
@@ -40,7 +42,7 @@ export function TouchControls({
   if (!enabled) return null;
 
   return (
-    <div className="touch-controls">
+    <div className="touch-controls" style={{ display: 'flex', gap: '12px' }}>
       {/* Hold Button */}
       <button
         type="button"
@@ -49,6 +51,8 @@ export function TouchControls({
         disabled={!canHold}
         aria-label="Hold piece"
         style={{
+          minWidth: '44px',
+          minHeight: '44px',
           padding: '12px 16px',
           fontSize: '14px',
           fontWeight: 600,
@@ -79,6 +83,8 @@ export function TouchControls({
         onClick={() => onAction('PAUSE')}
         aria-label={isPaused ? 'Resume game' : 'Pause game'}
         style={{
+          minWidth: '44px',
+          minHeight: '44px',
           padding: '12px 20px',
           fontSize: '14px',
           fontWeight: 600,
@@ -113,6 +119,8 @@ export function TouchControls({
         onClick={() => onAction('HARD_DROP')}
         aria-label="Hard drop"
         style={{
+          minWidth: '44px',
+          minHeight: '44px',
           padding: '12px 16px',
           fontSize: '14px',
           fontWeight: 600,
@@ -135,6 +143,6 @@ export function TouchControls({
       </button>
     </div>
   );
-}
+});
 
 export default TouchControls;

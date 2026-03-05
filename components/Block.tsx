@@ -1,60 +1,78 @@
 /**
  * 3D Block Components
  * 
- * US-008: 3D block rendering with ghost piece and preview support
+ * US-003: 3D block components with neon glow effects
+ * US-012: Trail effect and React.memo optimization
+ * 
+ * Features:
+ * - Block: Main 3D tetromino block with glow effect
+ * - GhostBlock: Semi-transparent preview of where piece will land
+ * - PreviewBlock: Smaller block for next/hold piece displays
+ * - Trail: Motion trail effect for falling pieces
  */
 
 'use client';
 
-
+import React, { memo, useRef } from 'react';
 import { RoundedBox } from '@react-three/drei';
+import * as THREE from 'three';
 import type { TetrominoType } from '../types/tetromino';
 import { TETROMINO_COLORS } from '../types/tetromino';
 
+// Common block props
 interface BlockProps {
-  /** Position in 3D space */
-  position: [number, number, number];
-  /** Tetromino type for color */
   type: TetrominoType;
-  /** Optional scale (default: 1) */
+  position?: [number, number, number];
   scale?: number;
 }
 
 /**
- * Standard 3D block for locked pieces and current piece
+ * Main 3D block component with neon glow effect
+ * Optimized with React.memo to prevent unnecessary re-renders
  */
-export function Block({ position, type, scale = 1 }: BlockProps) {
+export const Block = memo(function Block({ 
+  type, 
+  position = [0, 0, 0],
+  scale = 1,
+}: BlockProps) {
   const colors = TETROMINO_COLORS[type];
   
   return (
     <RoundedBox
       position={position}
-      args={[0.95 * scale, 0.95 * scale, 0.95 * scale]}
-      radius={0.1 * scale}
+      scale={[scale, scale, scale]}
+      radius={0.05}
       smoothness={4}
+      castShadow
+      receiveShadow
     >
       <meshStandardMaterial
         color={colors.color}
         emissive={colors.emissive}
-        emissiveIntensity={0.3}
+        emissiveIntensity={0.5}
         roughness={0.2}
-        metalness={0.1}
+        metalness={0.8}
       />
     </RoundedBox>
   );
-}
+});
 
 /**
- * Ghost block - semi-transparent outline showing where piece will land
+ * Ghost block for previewing where piece will land
+ * Semi-transparent with subtle glow
  */
-export function GhostBlock({ position, type, scale = 1 }: BlockProps) {
+export const GhostBlock = memo(function GhostBlock({ 
+  type, 
+  position = [0, 0, 0],
+  scale = 1,
+}: BlockProps) {
   const colors = TETROMINO_COLORS[type];
   
   return (
     <RoundedBox
       position={position}
-      args={[0.95 * scale, 0.95 * scale, 0.95 * scale]}
-      radius={0.1 * scale}
+      scale={[scale, scale, scale]}
+      radius={0.05}
       smoothness={4}
     >
       <meshStandardMaterial
@@ -62,105 +80,94 @@ export function GhostBlock({ position, type, scale = 1 }: BlockProps) {
         transparent
         opacity={0.25}
         emissive={colors.emissive}
-        emissiveIntensity={0.1}
-        roughness={0.5}
-        metalness={0}
-        wireframe={false}
+        emissiveIntensity={0.2}
       />
     </RoundedBox>
   );
-}
+});
 
 /**
- * Preview block - smaller block for next/hold piece displays
+ * Smaller preview block for next/hold piece displays
  */
-export function PreviewBlock({ position, type, scale = 0.6 }: BlockProps) {
+export const PreviewBlock = memo(function PreviewBlock({ 
+  type, 
+  position = [0, 0, 0],
+  scale = 0.8,
+}: BlockProps) {
   const colors = TETROMINO_COLORS[type];
   
   return (
     <RoundedBox
       position={position}
-      args={[0.95 * scale, 0.95 * scale, 0.95 * scale]}
-      radius={0.1 * scale}
+      scale={[scale, scale, scale]}
+      radius={0.05}
       smoothness={4}
     >
       <meshStandardMaterial
         color={colors.color}
         emissive={colors.emissive}
-        emissiveIntensity={0.4}
+        emissiveIntensity={0.6}
         roughness={0.2}
-        metalness={0.1}
+        metalness={0.8}
       />
     </RoundedBox>
   );
+});
+
+/**
+ * Trail component that renders behind falling pieces
+ * Uses Drei Trail for smooth motion trails
+ */
+export interface TrailProps {
+  /** Children to render with trail effect */
+  children: React.ReactNode;
+  /** Trail color */
+  color?: string;
+  /** Trail width */
+  width?: number;
+  /** Trail length (number of frames to keep) */
+  length?: number;
+  /** Trail decay rate */
+  decay?: number;
+  /** Trail attenuation */
+  attenuation?: number;
 }
 
 /**
- * Get block positions for a tetromino at a given position
+ * Trail effect for falling pieces
+ * Renders a glowing trail behind moving pieces
  */
-export function getBlockPositions(
-  type: TetrominoType,
-  rotation: number,
-  position: { x: number; y: number }
-): { x: number; y: number }[] {
-  const cells = getTetrominoCells(type, rotation);
-  
-  return cells.map(([dx, dy]) => ({
-    x: position.x + dx,
-    y: position.y + dy,
-  }));
-}
+export const PieceTrail = memo(function PieceTrail({
+  children,
+  color = '#00f0ff',
+  width = 0.5,
+}: TrailProps) {
+  const ref = useRef<THREE.Group>(null);
 
-/**
- * Get cells for a tetromino type and rotation
- * This avoids dynamic require
- */
-function getTetrominoCells(type: TetrominoType, rotation: number): [number, number][] {
-  // Import from tetrominos module statically
-  const rotations: Record<TetrominoType, [number, number][][]> = {
-    I: [
-      [[0, 1], [1, 1], [2, 1], [3, 1]],
-      [[2, 0], [2, 1], [2, 2], [2, 3]],
-      [[0, 2], [1, 2], [2, 2], [3, 2]],
-      [[1, 0], [1, 1], [1, 2], [1, 3]],
-    ],
-    O: [
-      [[0, 0], [1, 0], [0, 1], [1, 1]],
-      [[0, 0], [1, 0], [0, 1], [1, 1]],
-      [[0, 0], [1, 0], [0, 1], [1, 1]],
-      [[0, 0], [1, 0], [0, 1], [1, 1]],
-    ],
-    T: [
-      [[0, 1], [1, 1], [2, 1], [1, 0]],
-      [[1, 0], [1, 1], [1, 2], [0, 1]],
-      [[0, 1], [1, 1], [2, 1], [1, 2]],
-      [[1, 0], [1, 1], [1, 2], [2, 1]],
-    ],
-    S: [
-      [[0, 1], [1, 1], [1, 0], [2, 0]],
-      [[1, 0], [1, 1], [0, 1], [0, 2]],
-      [[0, 1], [1, 1], [1, 2], [2, 2]],
-      [[2, 0], [2, 1], [1, 1], [1, 2]],
-    ],
-    Z: [
-      [[0, 0], [1, 0], [1, 1], [2, 1]],
-      [[1, 0], [1, 1], [0, 1], [0, 2]],
-      [[0, 1], [1, 1], [1, 2], [2, 2]],
-      [[2, 0], [2, 1], [1, 1], [1, 2]],
-    ],
-    J: [
-      [[0, 0], [0, 1], [1, 1], [2, 1]],
-      [[1, 0], [1, 1], [1, 2], [0, 2]],
-      [[0, 1], [1, 1], [2, 1], [2, 2]],
-      [[2, 0], [1, 0], [1, 1], [1, 2]],
-    ],
-    L: [
-      [[2, 0], [0, 1], [1, 1], [2, 1]],
-      [[0, 0], [1, 0], [1, 1], [1, 2]],
-      [[0, 1], [1, 1], [2, 1], [0, 2]],
-      [[1, 0], [1, 1], [1, 2], [2, 2]],
-    ],
-  };
-  
-  return rotations[type][rotation % 4];
-}
+  // Simplified trail using custom geometry
+  // Full Trail component from Drei can be heavy, so we use a lighter approach
+  return (
+    <group ref={ref}>
+      {/* Render multiple faded copies for trail effect */}
+      {Array.from({ length: 4 }).map((_, i) => (
+        <group 
+          key={i}
+          position={[0, -i * 0.15, 0]}
+          scale={[1 - i * 0.1, 1 - i * 0.1, 1 - i * 0.1]}
+        >
+          <mesh>
+            <boxGeometry args={[width * (1 - i * 0.2), 0.1, width * (1 - i * 0.2)]} />
+            <meshBasicMaterial 
+              color={color} 
+              transparent 
+              opacity={0.15 - i * 0.03}
+            />
+          </mesh>
+        </group>
+      ))}
+      {children}
+    </group>
+  );
+});
+
+export default Block;
