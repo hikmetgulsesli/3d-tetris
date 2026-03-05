@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TETRIS 3D - Playing Screen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg-primary: #0a0a12;
+            --color-bg-secondary: #12121f;
+            --color-bg-card: #1a1a2e;
+            --color-bg-panel: rgba(26, 26, 46, 0.8);
+            --color-accent-cyan: #00f0ff;
+            --color-accent-purple: #a855f7;
+            --color-accent-green: #22c55e;
+            --color-accent-yellow: #eab308;
+            --color-accent-red: #ef4444;
+            --color-accent-orange: #f97316;
+            --color-accent-blue: #3b82f6;
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #94a3b8;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --tetromino-i: #00f0ff;
+            --tetromino-o: #eab308;
+            --tetromino-t: #a855f7;
+            --tetromino-s: #22c55e;
+            --tetromino-z: #ef4444;
+            --tetromino-j: #3b82f6;
+            --tetromino-l: #f97316;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg-primary);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Starfield background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
+                radial-gradient(1px 1px at 50px 90px, rgba(255,255,255,0.3), transparent),
+                radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.2), transparent);
+            background-repeat: repeat;
+            background-size: 400px 400px;
+        }
+        
+        .game-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 2rem;
+            height: 100vh;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Side Panels */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .panel {
+            background: var(--color-bg-panel);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 1.25rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .panel-title {
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        
+        /* Hold Piece Panel */
+        .hold-piece {
+            width: 100px;
+            height: 100px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .hold-piece .piece-preview {
+            display: grid;
+            grid-template-columns: repeat(4, 18px);
+            gap: 2px;
+        }
+        
+        .block {
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2), 0 0 10px currentColor;
+        }
+        
+        .block-i { background: var(--tetromino-i); color: var(--tetromino-i); }
+        .block-o { background: var(--tetromino-o); color: var(--tetromino-o); }
+        .block-t { background: var(--tetromino-t); color: var(--tetromino-t); }
+        .block-s { background: var(--tetromino-s); color: var(--tetromino-s); }
+        .block-z { background: var(--tetromino-z); color: var(--tetromino-z); }
+        .block-j { background: var(--tetromino-j); color: var(--tetromino-j); }
+        .block-l { background: var(--tetromino-l); color: var(--tetromino-l); }
+        
+        /* Score Panel */
+        .score-value {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-accent-cyan);
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            text-align: center;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .stat-value {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        /* Next Pieces Panel */
+        .next-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .next-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .next-number {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            color: var(--color-text-secondary);
+            width: 20px;
+        }
+        
+        .next-preview {
+            display: grid;
+            grid-template-columns: repeat(4, 14px);
+            gap: 1px;
+        }
+        
+        .next-preview .block {
+            width: 14px;
+            height: 14px;
+        }
+        
+        /* Controls Panel */
+        .control-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .control-item:last-child {
+            border-bottom: none;
+        }
+        
+        .control-action {
+            color: var(--color-text-secondary);
+        }
+        
+        .key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 24px;
+            padding: 0 0.5rem;
+            background: var(--color-bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            color: var(--color-text-primary);
+        }
+        
+        /* Game Area */
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .game-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .game-title-small {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            background: linear-gradient(135deg, var(--color-accent-cyan), #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .game-board-container {
+            position: relative;
+            background: var(--color-bg-card);
+            border: 2px solid rgba(0, 240, 255, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.1), inset 0 0 60px rgba(0,0,0,0.3);
+        }
+        
+        .game-board {
+            width: 300px;
+            height: 600px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 4px;
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(20, 1fr);
+            gap: 1px;
+        }
+        
+        .grid-cell {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        
+        .grid-cell.filled-i { background: var(--tetromino-i); box-shadow: 0 0 10px var(--tetromino-i); }
+        .grid-cell.filled-o { background: var(--tetromino-o); box-shadow: 0 0 10px var(--tetromino-o); }
+        .grid-cell.filled-t { background: var(--tetromino-t); box-shadow: 0 0 10px var(--tetromino-t); }
+        .grid-cell.filled-s { background: var(--tetromino-s); box-shadow: 0 0 10px var(--tetromino-s); }
+        .grid-cell.filled-z { background: var(--tetromino-z); box-shadow: 0 0 10px var(--tetromino-z); }
+        .grid-cell.filled-j { background: var(--tetromino-j); box-shadow: 0 0 10px var(--tetromino-j); }
+        .grid-cell.filled-l { background: var(--tetromino-l); box-shadow: 0 0 10px var(--tetromino-l); }
+        
+        /* Game Actions */
+        .game-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.05em;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-accent-cyan), #0099ff);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--color-bg-card);
+            color: var(--color-text-primary);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    
+    <div class="game-container">
+        <!-- Left Panel -->
+        <div class="side-panel">
+            <div class="panel">
+                <div class="panel-title">Hold Piece (C)</div>
+                <div class="hold-piece">
+                    <div class="piece-preview">
+                        <div class="block block-j" style="grid-column: 1; grid-row: 2;"></div>
+                        <div class="block block-j" style="grid-column: 2; grid-row: 2;"></div>
+                        <div class="block block-j" style="grid-column: 3; grid-row: 2;"></div>
+                        <div class="block block-j" style="grid-column: 3; grid-row: 1;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-title">Controls</div>
+                <div class="control-item">
+                    <span class="control-action">Move</span>
+                    <span><span class="key">←</span> <span class="key">→</span></span>
+                </div>
+                <div class="control-item">
+                    <span class="control-action">Rotate</span>
+                    <span class="key">↑</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-action">Soft Drop</span>
+                    <span class="key">↓</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-action">Hard Drop</span>
+                    <span class="key">SPACE</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-action">Hold</span>
+                    <span class="key">C</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-action">Pause</span>
+                    <span class="key">P</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game Area -->
+        <div class="game-area">
+            <div class="game-header">
+                <div class="game-title-small">TETRIS 3D</div>
+            </div>
+            <div class="game-board-container">
+                <div class="game-board">
+                    <!-- Grid cells - sample filled positions -->
+                    <script>
+                        const board = document.querySelector('.game-board');
+                        for (let i = 0; i < 200; i++) {
+                            const cell = document.createElement('div');
+                            cell.className = 'grid-cell';
+                            board.appendChild(cell);
+                        }
+                    </script>
+                </div>
+            </div>
+            <div class="game-actions">
+                <button class="btn btn-primary">START</button>
+                <button class="btn btn-secondary">PAUSE</button>
+                <button class="btn btn-secondary">RESTART</button>
+            </div>
+        </div>
+        
+        <!-- Right Panel -->
+        <div class="side-panel">
+            <div class="panel">
+                <div class="panel-title">Score</div>
+                <div class="score-value">12,450</div>
+                <div class="stat-row">
+                    <span class="stat-label">Level</span>
+                    <span class="stat-value">3</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Lines</span>
+                    <span class="stat-value">24</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Combo</span>
+                    <span class="stat-value" style="color: var(--color-accent-green);">×2</span>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-title">Next Pieces</div>
+                <div class="next-list">
+                    <div class="next-item">
+                        <span class="next-number">1</span>
+                        <div class="next-preview">
+                            <div class="block block-t" style="grid-column: 2; grid-row: 1;"></div>
+                            <div class="block block-t" style="grid-column: 1; grid-row: 2;"></div>
+                            <div class="block block-t" style="grid-column: 2; grid-row: 2;"></div>
+                            <div class="block block-t" style="grid-column: 3; grid-row: 2;"></div>
+                        </div>
+                    </div>
+                    <div class="next-item">
+                        <span class="next-number">2</span>
+                        <div class="next-preview">
+                            <div class="block block-i" style="grid-column: 1; grid-row: 2;"></div>
+                            <div class="block block-i" style="grid-column: 2; grid-row: 2;"></div>
+                            <div class="block block-i" style="grid-column: 3; grid-row: 2;"></div>
+                            <div class="block block-i" style="grid-column: 4; grid-row: 2;"></div>
+                        </div>
+                    </div>
+                    <div class="next-item">
+                        <span class="next-number">3</span>
+                        <div class="next-preview">
+                            <div class="block block-s" style="grid-column: 2; grid-row: 1;"></div>
+                            <div class="block block-s" style="grid-column: 3; grid-row: 1;"></div>
+                            <div class="block block-s" style="grid-column: 1; grid-row: 2;"></div>
+                            <div class="block block-s" style="grid-column: 2; grid-row: 2;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-title">High Score</div>
+                <div class="score-value" style="font-size: 1.5rem; color: var(--color-accent-yellow);">45,200</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
