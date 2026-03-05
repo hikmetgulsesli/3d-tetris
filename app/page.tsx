@@ -1,101 +1,255 @@
-import Image from "next/image";
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import './globals.css';
+import {
+  HoldPiecePanel,
+  ControlsPanel,
+  ScorePanel,
+  NextPiecesPanel,
+  GameActionsPanel,
+} from '../components';
+import { useGameStore } from '../store';
+import { getRandomTetrominoType } from '../lib/tetrominos';
+import type { TetrominoType } from '../types';
+
+// Generate initial next pieces
+function generateNextPieces(count: number): TetrominoType[] {
+  const pieces: TetrominoType[] = [];
+  for (let i = 0; i < count; i++) {
+    pieces.push(getRandomTetrominoType());
+  }
+  return pieces;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [mounted, setMounted] = useState(false);
+  
+  const {
+    gameState,
+    score,
+    level,
+    lines,
+    combo,
+    highScore,
+    nextPieces,
+    holdPiece,
+    startGame,
+    pauseGame,
+    restartGame,
+    setNextPieces,
+  } = useGameStore();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Initialize next pieces on mount
+  useEffect(() => {
+    setMounted(true);
+    if (nextPieces.length === 0) {
+      setNextPieces(generateNextPieces(5));
+    }
+  }, [nextPieces.length, setNextPieces]);
+
+  const handleStart = () => {
+    if (gameState === 'start') {
+      startGame();
+    } else if (gameState === 'paused') {
+      pauseGame(); // Toggle
+    }
+  };
+
+  const handlePause = () => {
+    pauseGame();
+  };
+
+  const handleRestart = () => {
+    restartGame();
+  };
+
+  if (!mounted) {
+    return null; // Prevent hydration mismatch
+  }
+
+  return (
+    <div
+      className="game-container"
+      style={{
+        minHeight: '100vh',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Starfield Background */}
+      <div className="stars" />
+
+      {/* Main Game Layout */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '280px 1fr 280px',
+          gap: '2rem',
+          height: '100vh',
+          padding: '1.5rem',
+          position: 'relative',
+          zIndex: 'var(--z-base)',
+        }}
+      >
+        {/* Left Panel */}
+        <div
+          className="side-panel"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.5rem',
+          }}
+        >
+          <HoldPiecePanel piece={holdPiece} />
+          <ControlsPanel />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+        {/* Center Game Area */}
+        <div
+          className="game-area"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+          {/* Game Title */}
+          <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+            <h1
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'var(--text-lg)',
+                fontWeight: 700,
+                letterSpacing: '0.2em',
+                background: 'linear-gradient(135deg, var(--color-accent-cyan), #00d4ff)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              TETRIS 3D
+            </h1>
+          </div>
+
+          {/* Game Board Placeholder */}
+          <div
+            className="game-board-container"
+            style={{
+              position: 'relative',
+              background: 'var(--color-bg-card)',
+              border: '2px solid rgba(0, 240, 255, 0.2)',
+              borderRadius: '8px',
+              padding: '1rem',
+              boxShadow: '0 0 40px rgba(0, 240, 255, 0.1), inset 0 0 60px rgba(0,0,0,0.3)',
+            }}
+            data-testid="game-board-container"
+          >
+            <div
+              className="game-board"
+              style={{
+                width: 300,
+                height: 600,
+                background: 'rgba(0,0,0,0.5)',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {gameState === 'start' && (
+                <div
+                  style={{
+                    textAlign: 'center',
+                    color: 'var(--color-text-secondary)',
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: 'var(--text-base)',
+                      animation: 'blink 1.5s ease-in-out infinite',
+                    }}
+                  >
+                    Press ENTER to Start
+                  </p>
+                </div>
+              )}
+              
+              {gameState === 'paused' && (
+                <div
+                  style={{
+                    textAlign: 'center',
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: 'var(--text-2xl)',
+                      fontWeight: 700,
+                      color: 'var(--color-accent-yellow)',
+                      textShadow: '0 0 20px rgba(234, 179, 8, 0.5)',
+                    }}
+                  >
+                    PAUSED
+                  </h2>
+                </div>
+              )}
+              
+              {gameState === 'gameover' && (
+                <div
+                  style={{
+                    textAlign: 'center',
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: 'var(--text-2xl)',
+                      fontWeight: 700,
+                      color: 'var(--color-accent-red)',
+                      textShadow: '0 0 20px rgba(239, 68, 68, 0.5)',
+                    }}
+                  >
+                    GAME OVER
+                  </h2>
+                  <p style={{ marginTop: '1rem', color: 'var(--color-text-secondary)' }}>
+                    Final Score: {score.toLocaleString()}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Game Actions */}
+          <GameActionsPanel
+            gameState={gameState}
+            onStart={handleStart}
+            onPause={handlePause}
+            onRestart={handleRestart}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        </div>
+
+        {/* Right Panel */}
+        <div
+          className="side-panel"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.5rem',
+          }}
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+          <ScorePanel
+            score={score}
+            level={level}
+            lines={lines}
+            combo={combo}
+            highScore={highScore}
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <NextPiecesPanel pieces={nextPieces} />
+        </div>
+      </div>
     </div>
   );
 }
