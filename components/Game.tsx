@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { GameState, ScoreData, saveHighScore } from '../types/game-state';
 import { useKeyboard } from '../hooks/useKeyboard';
 import { StartScreen } from './StartScreen';
@@ -59,7 +59,6 @@ export function Game() {
   }, [scoreData.score]);
 
   // Handle game over - exposed for game logic integration
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleGameOver = useCallback((finalScoreData: ScoreData) => {
     setScoreData(finalScoreData);
     saveHighScore(finalScoreData.score);
@@ -75,8 +74,16 @@ export function Game() {
             togglePause();
           }
           break;
+        case 'CONFIRM':
+          // Start game from start screen or restart from game over with Enter
+          if (gameState === 'START') {
+            startGame();
+          } else if (gameState === 'GAME_OVER') {
+            restartGame();
+          }
+          break;
         case 'HARD_DROP':
-          // Start game from start screen with space/enter
+          // Start game from start screen with space
           if (gameState === 'START') {
             startGame();
           } else if (gameState === 'GAME_OVER') {
@@ -100,22 +107,6 @@ export function Game() {
     onAction: handleAction,
     enabled: true,
   });
-
-  // Handle Enter key for start/game over
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        if (gameState === 'START') {
-          startGame();
-        } else if (gameState === 'GAME_OVER') {
-          restartGame();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [gameState, startGame, restartGame]);
 
   return (
     <div className="relative min-h-screen overflow-hidden">

@@ -18,7 +18,10 @@
   
   /* Accent Colors - Neon */
   --color-accent-cyan: #00f0ff;
+  --color-accent-cyan-dark: #00d4ff;
+  --color-accent-cyan-darker: #0099ff;
   --color-accent-purple: #a855f7;
+  --color-accent-purple-light: #c084fc;
   --color-accent-purple-dark: #9333ea;
   --color-accent-green: #22c55e;
   --color-accent-green-dark: #16a34a;
@@ -252,7 +255,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Utility classes for text gradients */
 .text-gradient-cyan {
-  background: linear-gradient(135deg, var(--color-accent-cyan), #00d4ff);
+  background: linear-gradient(135deg, var(--color-accent-cyan), var(--color-accent-cyan-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

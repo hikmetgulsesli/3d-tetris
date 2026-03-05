@@ -35,7 +35,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
           className="text-6xl md:text-8xl font-bold tracking-wider mb-2 animate-glow"
           style={{ 
             fontFamily: 'var(--font-heading)',
-            background: 'linear-gradient(135deg, var(--color-accent-cyan), #00d4ff, #0099ff)',
+            background: 'linear-gradient(135deg, var(--color-accent-cyan), var(--color-accent-cyan-dark), var(--color-accent-cyan-darker))',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',

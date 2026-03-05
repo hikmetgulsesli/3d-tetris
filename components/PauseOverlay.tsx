@@ -39,7 +39,7 @@ export function PauseOverlay({ onResume, onRestart }: PauseOverlayProps) {
           className="text-5xl md:text-6xl font-bold tracking-widest mb-4 animate-glow"
           style={{ 
             fontFamily: 'var(--font-heading)',
-            background: 'linear-gradient(135deg, var(--color-accent-purple), #c084fc)',
+            background: 'linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-purple-light))',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
